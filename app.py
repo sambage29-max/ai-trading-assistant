@@ -37,4 +37,4 @@ with col1:
     st.metric("📈 NIFTY 50", price)
 
 with col2:
-    st.metric("🧠 AI Signal", "WAIT"))
+    st.metric("🧠 AI Signal", "WAIT")
