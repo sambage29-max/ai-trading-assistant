@@ -31,7 +31,7 @@ data = response.json()
 
 price = data["data"]["NSE_INDEX:Nifty 50"]["last_price"]
 
-st.mcol1, col2 = st.columns(2)
+st.mccol1, col2 = st.columns(2)
 
 with col1:
     st.metric("📈 NIFTY 50", price)
