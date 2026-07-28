@@ -14,3 +14,6 @@ st.set_page_config(
 st.title("📈 AI Trading Assistant")
 
 st.success("Step 1 Successful ✅")
+
+st.write("Token loaded successfully ✅")
+st.write(ACCESS_TOKEN[:10] + "...")
