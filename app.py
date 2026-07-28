@@ -60,3 +60,4 @@ st.info(
     "V1 is for testing and paper trading. "
     "Live Upstox market data will be connected next."
 )
+st.write("🔗 Connecting to live market data...")
