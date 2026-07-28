@@ -1,6 +1,12 @@
 import streamlit as st
 from datetime import datetime
-
+import requests
+ACCESS_TOKEN = st.secrets["UPSTOX_ACCESS_TOKEN"]
+headers = {
+    "Accept": "application/json",
+    "Authorization": f"Bearer {ACCESS_TOKEN}"
+}
+url = "https://api.upstox.com/v2/market-quote/ltp"
 st.set_page_config(
     page_title="AI Trading Assistant",
     page_icon="📈",
