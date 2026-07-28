@@ -36,8 +36,7 @@ response = requests.get(
 
 st.write("Status Code:", response.status_code)
 
-try:
-    data = response.json()
+try:     data = response.json()
 
 price = data["data"]["NSE_INDEX:Nifty 50"]["last_price"]
 
@@ -45,5 +44,4 @@ st.metric(
     label="📈 NIFTY 50 Live",
     value=price
 )
-except Exception:
-    st.write(response.text)
+except Exception:   st.write(response.text)
