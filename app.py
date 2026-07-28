@@ -6,4 +6,5 @@ st.set_page_config(
 )
 
 st.title("📈 AI Trading Assistant")
-st.write("Hello Bhai! App is working.")
+
+st.success("Step 1 Successful ✅")
