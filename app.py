@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-ACCESS_TOKEN = "TEST"
+ACCESS_TOKEN = st.secrets["UPSTOX_ACCESS_TOKEN"]
 
 HEADERS = {
     "Authorization": f"Bearer {ACCESS_TOKEN}"
