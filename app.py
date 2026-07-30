@@ -32,6 +32,7 @@ response = requests.get(
 )
 
 data = response.json()
+st.write(data)
 
 price = data["data"]["NSE_INDEX:Nifty 50"]["last_price"]
 if price > 24000:
