@@ -40,3 +40,10 @@ with col1:
 with col2:
     st.metric("📈 Trend", "Bullish")
     st.metric("🧠 AI Signal", "WAIT")
+df = pd.DataFrame({
+    "Indicator": ["RSI", "MACD", "EMA"],
+    "Status": ["Neutral", "Bullish", "Bullish"]
+})
+
+st.subheader("📊 AI Analysis")
+st.dataframe(df, use_container_width=True)
