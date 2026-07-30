@@ -14,7 +14,7 @@ ACCESS_TOKEN = st.secrets["UPSTOX_ACCESS_TOKEN"]
 
 st.title("📈 AI Trading Assistant")
 st.success("Step 1 Complete ✅")
-url = "https://api.upstox.com/v2/historical-candle/NSE_INDEX|Nifty 50/1minute"
+url = "https://api.upstox.com/v2/historical-candle/NSE_INDEX%7CNifty%205/1minute"
 
 
 
