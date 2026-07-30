@@ -47,3 +47,4 @@ df = pd.DataFrame({
 
 st.subheader("📊 AI Analysis")
 st.dataframe(df, use_container_width=True)
+
