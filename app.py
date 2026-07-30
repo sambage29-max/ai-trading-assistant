@@ -15,6 +15,9 @@ ACCESS_TOKEN = st.secrets["UPSTOX_ACCESS_TOKEN"]
 st.title("📈 AI Trading Assistant")
 st.success("Step 1 Complete ✅")
 url = "https://api.upstox.com/v2/historical-candle/NSE_INDEX%7CNifty%205/1minute"
+params = {
+    "instrument_key": "NSE_INDEX|Nifty 50"
+}
 
 
 
@@ -25,7 +28,8 @@ headers = {
 
 response = requests.get(
     url,
-    headers=headers
+    headers=headers,
+    params=params
 )
 
 data = response.json()
