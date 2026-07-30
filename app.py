@@ -47,8 +47,8 @@ with col1:
     st.metric("📈 NIFTY 50", price)
 
 with col2:
-    st.metric("📈 Trend", "Bullish")
-    st.metric("🧠 AI Signal", "WAIT")
+    st.metric("📈 Trend", trend)
+    st.metric("🧠 AI Signal", signal)
 df = pd.DataFrame({
     "Indicator": ["RSI", "MACD", "EMA"],
     "Status": ["Neutral", "Bullish", "Bullish"]
