@@ -57,12 +57,14 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.metric("📈 NIFTY 50", f"{price:,.2f}")
+st.metric("💰 Market Status", "LIVE 🟢")
 st.caption("🔄 Auto Refresh: Every 5 Seconds")
 
 with col2:
     st.metric("📈 Trend", trend)
     st.metric("🧠 AI Signal", signal)
 st.metric("🎯 Confidence", "75%")
+st.caption(f"✅ Last Updated: {datetime.now().strftime('%H:%M:%S')}")
 df = pd.DataFrame({
     "Indicator": ["RSI", "MACD", "EMA", "Trend"],
     "Status": ["Calculating...", "Calculating...", "Calculating...", trend]
