@@ -34,15 +34,20 @@ response = requests.get(
 )
 
 data = response.json()
-st.write(data)
+# st.write(data)
 
 price = data["data"]["NSE_INDEX:Nifty 50"]["last_price"]
-if price > 24000:
-    trend = "Bullish"
-    signal = "BUY"
+if price > 24250:
+    trend = "Bullish 📈"
+    signal = "BUY 🟢"
+
+elif price < 24150:
+    trend = "Bearish 📉"
+    signal = "SELL 🔴"
+
 else:
-    trend = "Bearish"
-    signal = "SELL"
+    trend = "Sideways ↔️"
+    signal = "WAIT 🟡"
 
 col1, col2 = st.columns(2)
 
