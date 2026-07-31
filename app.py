@@ -16,7 +16,7 @@ st.title("📈 AI Trading Assistant")
 st.caption("🚀 Powered by Upstox API + AI")
 st.divider()
 st.success("🟢 LIVE MARKET CONNECTED")
-st.info("📅 Market : NSE | ⏰ Refresh : 5 Seconds")
+st.info("📊 Market : NSE | ⏰ Refresh : 5 Seconds")
 url = "https://api.upstox.com/v2/market-quote/ltp"
 
 params = {
