@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
+from datetime import datetime
 from streamlit_autorefresh import st_autorefresh
 
 
@@ -16,7 +17,7 @@ st.title("📈 AI Trading Assistant")
 st.caption("🚀 Powered by Upstox API + AI")
 st.divider()
 st.success("🟢 LIVE MARKET CONNECTED")
-st.info("📊 Market : NSE | ⏰ Refresh : 5 Seconds")
+st.info(f"🏛️ Market : NSE | 🕒 {datetime.now().strftime('%d-%m-%Y %H:%M:%S')}")
 url = "https://api.upstox.com/v2/market-quote/ltp"
 
 params = {
