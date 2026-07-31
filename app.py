@@ -13,6 +13,8 @@ st_autorefresh(interval=5000, key="refresh")
 ACCESS_TOKEN = st.secrets["UPSTOX_ACCESS_TOKEN"]
 
 st.title("📈 AI Trading Assistant")
+st.caption("🚀 Powered by Upstox API + AI")
+st.divider()
 st.success("Step 1 Complete ✅")
 url = "https://api.upstox.com/v2/market-quote/ltp"
 
@@ -52,7 +54,7 @@ else:
 col1, col2 = st.columns(2)
 
 with col1:
-    st.metric("📈 NIFTY 50", price)
+    st.metric("📈 NIFTY 50", f"{price:,.2f}")
 st.caption("🔄 Auto Refresh: Every 5 Seconds")
 
 with col2:
