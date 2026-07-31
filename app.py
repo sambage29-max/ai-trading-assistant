@@ -59,8 +59,8 @@ with col2:
     st.metric("🧠 AI Signal", signal)
 st.metric("🎯 Confidence", "75%")
 df = pd.DataFrame({
-    "Indicator": ["RSI", "MACD", "EMA"],
-    "Status": ["Neutral", "Bullish", "Bullish"]
+    "Indicator": ["RSI", "MACD", "EMA", "Trend"],
+    "Status": ["Calculating...", "Calculating...", "Calculating...", trend]
 })
 
 st.subheader("📊 AI Analysis")
