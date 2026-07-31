@@ -57,6 +57,7 @@ with col1:
 with col2:
     st.metric("📈 Trend", trend)
     st.metric("🧠 AI Signal", signal)
+st.metric("🎯 Confidence", "75%")
 df = pd.DataFrame({
     "Indicator": ["RSI", "MACD", "EMA"],
     "Status": ["Neutral", "Bullish", "Bullish"]
