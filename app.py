@@ -53,6 +53,7 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.metric("📈 NIFTY 50", price)
+st.caption("🔄 Auto Refresh: Every 5 Seconds")
 
 with col2:
     st.metric("📈 Trend", trend)
