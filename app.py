@@ -43,3 +43,27 @@ with col2:
     st.metric("🧠 AI Signal", signal)
     st.metric("🎯 Confidence", confidence)
     st.caption(f"✅ Last Updated : {datetime.now().strftime('%H:%M:%S')}")
+# -----------------------
+# AI Analysis Table
+# -----------------------
+
+st.subheader("📊 AI Analysis")
+
+df = pd.DataFrame({
+    "Indicator": [
+        "RSI",
+        "MACD",
+        "EMA 20",
+        "EMA 50",
+        "Trend"
+    ],
+    "Status": [
+        "52.4 🟡",
+        "Bullish 🟢",
+        "24,320 🟢",
+        "24,180 🟢",
+        trend
+    ]
+})
+
+st.dataframe(df, use_container_width=True)
