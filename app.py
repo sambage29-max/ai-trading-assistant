@@ -77,6 +77,25 @@ df = pd.DataFrame({
 })
 
 st.dataframe(df, use_container_width=True)
+st.subheader("📈 NIFTY Trend Chart")
+
+fig = go.Figure()
+
+fig.add_trace(
+    go.Scatter(
+        y=chart_data,
+        mode="lines+markers",
+        name="NIFTY"
+    )
+)
+
+fig.update_layout(
+    height=350,
+    xaxis_title="Time",
+    yaxis_title="Price"
+)
+
+st.plotly_chart(fig, use_container_width=True) 
 # -----------------------
 # Market Summary
 # -----------------------
