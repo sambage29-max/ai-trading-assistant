@@ -30,18 +30,7 @@ elif rsi < 40 and macd == "Bearish":
 else:
     signal = "WAIT 🟡"
     confidence = "75%"
-else:
-    signal = "WAIT 🟡"
-    confidence = "75%"
-chart_data = [
-    24210,
-    24250,
-    24280,
-    24310,
-    24290,
-    24340,
-    24383.60
-]
+
 trend = "Bullish 🟢"
 signal = "BUY 🟢"
 confidence = "75%"
