@@ -16,6 +16,20 @@ st.set_page_config(
 # Demo Market Data
 # -----------------------
 price = 24383.60
+rsi = 52.4
+macd = "Bullish"
+ema20 = 24320
+ema50 = 24180
+
+if rsi > 60 and macd == "Bullish":
+    signal = "BUY 🟢"
+    confidence = "90%"
+elif rsi < 40 and macd == "Bearish":
+    signal = "SELL 🔴"
+    confidence = "90%"
+else:
+    signal = "WAIT 🟡"
+    confidence = "75%"
 chart_data = [
     24210,
     24250,
