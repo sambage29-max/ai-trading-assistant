@@ -16,6 +16,15 @@ st.set_page_config(
 # Demo Market Data
 # -----------------------
 price = 24383.60
+chart_data = [
+    24210,
+    24250,
+    24280,
+    24310,
+    24290,
+    24340,
+    24383.60
+]
 trend = "Bullish 🟢"
 signal = "BUY 🟢"
 confidence = "75%"
