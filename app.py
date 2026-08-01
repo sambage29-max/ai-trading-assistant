@@ -96,6 +96,18 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig, use_container_width=True) 
+st.subheader("📊 AI Score")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric("RSI", "52.4")
+
+with col2:
+    st.metric("MACD", "Bullish 🟢")
+
+with col3:
+    st.metric("Accuracy", "75%")
 # -----------------------
 # Market Summary
 # -----------------------
