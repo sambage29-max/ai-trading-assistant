@@ -66,6 +66,15 @@ with col2:
 st.metric("🎯 Confidence", "75%")
 st.caption(f"✅ Last Updated: {datetime.now().strftime('%H:%M:%S')}")
 df = pd.DataFrame({
+    "Indicator": ["RSI", "MACD", "EMA 20", "EMA 50", "Trend"],
+    "Status": [
+        "52.4 🟡",
+        "Bullish 🟢",
+        "24,320 🟢",
+        "24,180 🟢",
+        trend
+    ]
+})
     "Indicator": ["RSI", "MACD", "EMA", "Trend"],
     "Status": ["Calculating...", "Calculating...", "Calculating...", trend]
 })
