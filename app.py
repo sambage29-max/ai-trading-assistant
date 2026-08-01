@@ -123,6 +123,8 @@ with col1:
 with col2:
     st.metric("MACD", "Bullish 🟢")
 
+with col3:
+    st.metric("Accuracy", "75%")
 # -----------------------
 # Market Summary
 # -----------------------
