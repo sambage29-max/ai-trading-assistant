@@ -77,6 +77,9 @@ df = pd.DataFrame({
         trend
     ]
 })
+
+st.subheader("📊 AI Analysis")
+st.dataframe(df, use_container_width=True)
     "Indicator": ["RSI", "MACD", "EMA", "Trend"],
     "Status": ["Calculating...", "Calculating...", "Calculating...", trend]
 })
