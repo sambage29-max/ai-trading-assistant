@@ -30,6 +30,9 @@ elif rsi < 40 and macd == "Bearish":
 else:
     signal = "WAIT 🟡"
     confidence = "75%"
+else:
+    signal = "WAIT 🟡"
+    confidence = "75%"
 chart_data = [
     24210,
     24250,
