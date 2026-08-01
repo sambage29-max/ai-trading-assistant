@@ -67,3 +67,27 @@ df = pd.DataFrame({
 })
 
 st.dataframe(df, use_container_width=True)
+# -----------------------
+# Market Summary
+# -----------------------
+
+st.subheader("📋 Market Summary")
+
+if signal == "BUY 🟢":
+    st.success("✅ AI Recommendation: BUY")
+elif signal == "SELL 🔴":
+    st.error("❌ AI Recommendation: SELL")
+else:
+    st.warning("⚠️ AI Recommendation: WAIT")
+
+st.info(
+    f"""
+**Trend:** {trend}
+
+**Signal:** {signal}
+
+**Confidence:** {confidence}
+
+**Market:** NSE
+"""
+)
