@@ -88,7 +88,18 @@ elif adx >= 20:
 else:
     score -= 10
 
-confidence = f"{min(abs(score),100)}%"
+# AI Confidence Score
+confidence_score = abs(score)
+
+if adx >= 30:
+    confidence_score += 15
+elif adx >= 25:
+    confidence_score += 10
+elif adx >= 20:
+    confidence_score += 5
+
+confidence_score = min(confidence_score, 100)
+confidence = f"{confidence_score}%"
 
 if score >= 75:
     signal = "BUY 🟢"
