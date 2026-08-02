@@ -2,7 +2,6 @@ from zoneinfo import ZoneInfo
 import plotly.graph_objects as go
 import streamlit as st
 import pandas as pd
-datetime.now(ZoneInfo("Asia/Kolkata"))
 import requests
 import json
 import yfinance as yf
@@ -100,8 +99,7 @@ st.title("📈 AI Trading Assistant")
 st.caption("🚀 Powered by Upstox API + AI")
 
 st.success("🟢 LIVE MARKET CONNECTED")
-st.info(f"🏛️ Market : NSE | 🕒 {datetime.now().strftime('%d-%m-%Y %H:%M:%S')}")
-
+st.info(f"🏛️ Market : NSE | 🕒 datetime.now(ZoneInfo("Asia/Kolkata")).strftime('%d-%m-%Y %H:%M:%S')
 # -----------------------
 # Metrics
 # -----------------------
@@ -116,7 +114,7 @@ with col2:
     st.metric("📈 Trend", trend)
     st.metric("🧠 AI Signal", signal)
     st.metric("🎯 Confidence", confidence)
-    st.caption(f"✅ Last Updated : {datetime.now().strftime('%H:%M:%S')}")
+    st.caption(f"✅ Last Updated :datetime.now(ZoneInfo("Asia/Kolkata")).strftime('%H:%M:%S')
 # -----------------------
 # AI Analysis Table
 # -----------------------
