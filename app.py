@@ -8,6 +8,7 @@ import requests
 import json
 import yfinance as yf
 import ta
+from indicators import calculate_indicators
 
 # -----------------------
 # Page Config
