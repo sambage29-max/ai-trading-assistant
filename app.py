@@ -1,6 +1,7 @@
 import plotly.graph_objects as go
 import streamlit as st
 import pandas as pd
+import ta
 from datetime import datetime
 import requests
 import json
@@ -45,6 +46,32 @@ else:
 trend = "Bullish 🟢"
 signal = "BUY 🟢"
 confidence = "75%"
+# ----------------------------
+# AI Score Engine
+# ----------------------------
+
+score = 0
+
+# RSI Score
+if 45 <= rsi <= 65:
+    score += 20
+
+# MACD Score
+if macd == "Bullish":
+    score += 20
+
+# EMA Score
+if ema20 > ema50:
+    score += 20
+
+# Trend Score
+if trend == "Bullish 🟢":
+    score += 20
+
+# Base Score
+score += 20
+
+probability = f"{score}%"
 
 # -----------------------
 # Title
