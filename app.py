@@ -188,6 +188,29 @@ with col2:
 # -----------------------
 # AI Analysis Table
 # -----------------------
+st.markdown("---")
+st.subheader("📝 AI Reason")
+
+reason = []
+
+if rsi >= 60:
+    reason.append("✅ RSI Bullish")
+elif rsi <= 40:
+    reason.append("🔴 RSI Bearish")
+else:
+    reason.append("🟡 RSI Neutral")
+
+reason.append(f"{'✅' if macd == 'Bullish' else '🔴'} MACD {macd}")
+
+reason.append(f"{'✅' if ema20 > ema50 else '🔴'} EMA Trend")
+
+if adx >= 25:
+    reason.append("✅ Strong Trend")
+else:
+    reason.append("🟡 Weak Trend")
+
+for item in reason:
+    st.write(item)
 
 st.subheader("📊 AI Analysis")
 
