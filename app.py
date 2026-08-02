@@ -201,18 +201,12 @@ with col2:
 st.metric("⚖️ Risk : Reward", risk_reward)
 
 st.subheader("📋 Market Summary")
-if signal == "BUY 🟢":
-    st.success("✅ AI Recommendation: BUY")
 
-elif signal == "SELL 🔴":
-    st.error("❌ AI Recommendation: SELL")
-
-else:
-    st.warning("⚠️ AI Recommendation: WAIT")
-
-else:
-    ...
-
+entry = price
+stop_loss = entry - 120
+target1 = entry + 180
+target2 = entry + 360
+risk_reward = "1 : 3"
 
 st.info(
     f"""
