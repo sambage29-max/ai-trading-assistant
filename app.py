@@ -58,21 +58,25 @@ else:
 # AI Score Engine
 # ----------------------------
 
+# --------------------------
+# AI Score Engine
+# --------------------------
+
 score = 0
 
-# RSI Score
+# RSI
 if 45 <= rsi <= 65:
     score += 20
 
-# MACD Score
+# MACD
 if macd == "Bullish":
     score += 20
 
-# EMA Score
+# EMA
 if ema20 > ema50:
     score += 20
 
-# Trend Score
+# Trend
 if ema20 > ema50 and macd == "Bullish":
     score += 20
 
@@ -80,6 +84,18 @@ if ema20 > ema50 and macd == "Bullish":
 score += 20
 
 probability = f"{score}%"
+
+if score >= 80:
+    signal = "BUY 🟢"
+    trend = "Bullish 🟢"
+elif score >= 60:
+    signal = "WAIT 🟡"
+    trend = "Sideways 🟡"
+else:
+    signal = "SELL 🔴"
+    trend = "Bearish 🔴"
+
+confidence = probability 
 if score >= 80:
     signal = "BUY 🟢"
     confidence = probability
