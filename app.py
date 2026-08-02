@@ -134,6 +134,40 @@ st.caption("🚀 Powered by Upstox API + AI")
 st.success("🟢 LIVE MARKET CONNECTED")
 st.info(f"🏛️ Market : NSE | 🕒 {datetime.now(ZoneInfo('Asia/Kolkata')).strftime('%d-%m-%Y %H:%M:%S')}"
 )
+st.markdown("---")
+st.subheader("📋 Suggested Trade")
+if signal == "BUY 🟢":
+    st.success(f"""
+📈 BUY Setup
+
+Entry : {price:.2f}
+
+Stop Loss : {stop_loss:.2f}
+
+Target 1 : {target1:.2f}
+
+Target 2 : {target2:.2f}
+
+Risk Reward : {risk_reward}
+""")
+
+elif signal == "SELL 🔴":
+    st.error(f"""
+📉 SELL Setup
+
+Entry : {price:.2f}
+
+Stop Loss : {stop_loss:.2f}
+
+Target 1 : {target1:.2f}
+
+Target 2 : {target2:.2f}
+
+Risk Reward : {risk_reward}
+""")
+
+else:
+    st.warning("⚠️ No Trade Setup Available. Wait for a better opportunity.")
 # -----------------------
 # Metrics
 # -----------------------
