@@ -28,11 +28,22 @@ df_live = ticker.history(period="5d", interval="5m")
 
 price = float(df_live["Close"].iloc[-1])
 
-entry = price
-stop_loss = entry - 120
-target1 = entry + 180
-target2 = entry + 360
-risk_reward = "1 : 3"
+if signal.startswith("BUY"):
+    stop_loss = entry - (1.5 * atr)
+    target1 = entry + (2 * atr)
+    target2 = entry + (3 * atr)
+
+elif signal.startswith("SELL"):
+    stop_loss = entry + (1.5 * atr)
+    target1 = entry - (2 * atr)
+    target2 = entry - (3 * atr)
+
+else:
+    stop_loss = entry
+    target1 = entry
+    target2 = entry
+
+risk_reward = "1 : 2"
 
 chart_data = df_live["Close"].tail(30).tolist()
 
@@ -46,7 +57,12 @@ signal_line=ta.trend.MACD(df_live["Close"]).macd_signal().iloc[-1]
 
 macd = "Bullish" if macd_line > signal_line else "Bearish"
 
-
+atr = ta.volatility.AverageTrueRange(
+    high=df_live["High"],
+    low=df_live["Low"],
+    close=df_live["Close"],
+    window=14
+).average_true_range().iloc[-1]
 
 
 # --------------------------
