@@ -222,6 +222,13 @@ else:
 
 for item in reason:
     st.write(item)
+st.markdown("---")
+
+st.write(f"🟢 BUY Probability : {buy_probability}%")
+st.progress(buy_probability)
+
+st.write(f"🔴 SELL Probability : {sell_probability}%")
+st.progress(sell_probability)
 
 st.subheader("📊 AI Analysis")
 
