@@ -79,8 +79,12 @@ if ema20 > ema50 and macd == "Bullish":
 elif ema20 < ema50 and macd == "Bearish":
     score -= 25
 # ADX Strength
-if adx >= 25:
-    score += 25
+if adx >= 30:
+    score += 20
+elif adx >= 25:
+    score += 10
+elif adx >= 20:
+    score += 0
 else:
     score -= 10
 
