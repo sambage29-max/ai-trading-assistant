@@ -1,7 +1,8 @@
+from zoneinfo import ZoneInfo
 import plotly.graph_objects as go
 import streamlit as st
 import pandas as pd
-from datetime import datetime
+datetime.now(ZoneInfo("Asia/Kolkata"))
 import requests
 import json
 import yfinance as yf
