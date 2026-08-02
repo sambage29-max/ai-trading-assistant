@@ -28,7 +28,15 @@ ticker = yf.Ticker("^NSEI")
 df_live = ticker.history(period="5d", interval="5m")
 
 price = float(df_live["Close"].iloc[-1])
+data = calculate_indicators(df_live)
 
+price = data["price"]
+rsi = data["rsi"]
+ema20 = data["ema20"]
+ema50 = data["ema50"]
+macd = data["macd"]
+atr = data["atr"]
+adx = data["adx"]
 entry = price
 stop_loss = entry - 120
 target1 = entry + 180
