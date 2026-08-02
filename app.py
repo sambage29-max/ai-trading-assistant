@@ -50,9 +50,6 @@ else:
     signal = "WAIT 🟡"
     confidence = "75%"
 
-trend = "Bullish 🟢"
-signal = "BUY 🟢"
-confidence = "75%"
 # ----------------------------
 # AI Score Engine
 # ----------------------------
@@ -79,6 +76,20 @@ if trend == "Bullish 🟢":
 score += 20
 
 probability = f"{score}%"
+if score >= 80:
+    signal = "BUY 🟢"
+    confidence = probability
+    trend = "Bullish 🟢"
+
+elif score >= 60:
+    signal = "WAIT 🟡"
+    confidence = probability
+    trend = "Sideways 🟡"
+
+else:
+    signal = "SELL 🔴"
+    confidence = probability
+    trend = "Bearish 🔴"
 
 # -----------------------
 # Title
