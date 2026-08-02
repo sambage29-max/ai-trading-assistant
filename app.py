@@ -217,12 +217,7 @@ elif signal.startswith("SELL"):
 
 else:
     ...
-if signal == "BUY 🟢":
-    st.success("✅ AI Recommendation: BUY")
-elif signal == "SELL 🔴":
-    st.error("❌ AI Recommendation: SELL")
-else:
-    st.warning("⚠️ AI Recommendation: WAIT")
+
 
 st.info(
     f"""
