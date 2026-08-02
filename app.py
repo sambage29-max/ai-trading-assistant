@@ -53,24 +53,23 @@ macd = "Bullish" if macd_line > signal_line else "Bearish"
 
 score = 0
 
-# RSI
-if 45 <= rsi <= 65:
-    score += 20
+# RSI (30 Marks)
+if 50 <= rsi <= 70:
+    score += 30
+elif 40 <= rsi < 50:
+    score += 15
 
-# MACD
+# MACD (25 Marks)
 if macd == "Bullish":
-    score += 20
+    score += 25
 
-# EMA
+# EMA Trend (25 Marks)
 if ema20 > ema50:
-    score += 20
+    score += 25
 
-# Trend
+# Strong Trend Bonus (20 Marks)
 if ema20 > ema50 and macd == "Bullish":
     score += 20
-
-# Base Score
-score += 20
 
 probability = f"{score}%"
 
