@@ -99,7 +99,8 @@ st.title("📈 AI Trading Assistant")
 st.caption("🚀 Powered by Upstox API + AI")
 
 st.success("🟢 LIVE MARKET CONNECTED")
-st.info(f"🏛️ Market : NSE | 🕒 datetime.now(ZoneInfo("Asia/Kolkata")).strftime('%d-%m-%Y %H:%M:%S')
+st.info(f"🏛️ Market : NSE | 🕒 {datetime.now(ZoneInfo('Asia/Kolkata')).strftime('%d-%m-%Y %H:%M:%S')}"
+)
 # -----------------------
 # Metrics
 # -----------------------
