@@ -190,6 +190,17 @@ with col2:
 # -----------------------
 st.markdown("---")
 st.subheader("📝 AI Reason")
+buy_probability = max(score, 0)
+sell_probability = max(-score, 0)
+
+total = buy_probability + sell_probability
+
+if total > 0:
+    buy_probability = int((buy_probability / total) * 100)
+    sell_probability = 100 - buy_probability
+else:
+    buy_probability = 50
+    sell_probability = 50
 
 reason = []
 
