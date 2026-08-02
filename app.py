@@ -207,13 +207,14 @@ with col2:
 st.metric("⚖️ Risk : Reward", risk_reward)
 
 st.subheader("📋 Market Summary")
-if signal.startswith("BUY"):
-    stop_loss = ...
-    target1 = ...
-    target2 = ...
+if signal == "BUY 🟢":
+    st.success("✅ AI Recommendation: BUY")
 
-elif signal.startswith("SELL"):
-    ...
+elif signal == "SELL 🔴":
+    st.error("❌ AI Recommendation: SELL")
+
+else:
+    st.warning("⚠️ AI Recommendation: WAIT")
 
 else:
     ...
