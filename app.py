@@ -17,7 +17,15 @@ st.set_page_config(
 # -----------------------
 # Demo Market Data
 # -----------------------
-price = 24383.60
+price = 24383.60entry = price
+
+stop_loss = price - 120
+
+target1 = price + 180
+
+target2 = price + 360
+
+risk_reward = "1 : 3"
 chart_data = [
     24210,
     24250,
@@ -157,6 +165,19 @@ st.metric("🧠 AI Score", "100%")
 # -----------------------
 # Market Summary
 # -----------------------
+st.markdown("### 🎯 Trade Plan")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.success(f"Entry : {entry:.2f}")
+    st.error(f"Stop Loss : {stop_loss:.2f}")
+
+with col2:
+    st.info(f"Target 1 : {target1:.2f}")
+    st.info(f"Target 2 : {target2:.2f}")
+
+st.metric("⚖️ Risk : Reward", risk_reward)
 
 st.subheader("📋 Market Summary")
 
