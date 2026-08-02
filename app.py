@@ -154,6 +154,7 @@ with col2:
 
 with col3:
     st.metric("Accuracy", "75%")
+st.metric("🧠 AI Score", probability)
 # -----------------------
 # Market Summary
 # -----------------------
