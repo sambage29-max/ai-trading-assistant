@@ -17,7 +17,8 @@ st.set_page_config(
 # -----------------------
 # Demo Market Data
 # -----------------------
-price = 24383.60entry = price
+price = 24383.60
+entry = price
 
 stop_loss = price - 120
 
