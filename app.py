@@ -55,6 +55,14 @@ atr = ta.volatility.AverageTrueRange(
     window=14
 ).average_true_range().iloc[-1]
 st.metric("📊 ATR", f"{atr:.2f}")
+adx = ta.trend.ADXIndicator(
+    high=df_live["High"],
+    low=df_live["Low"],
+    close=df_live["Close"],
+    window=14
+).adx().iloc[-1]
+
+st.metric("💪 ADX", f"{adx:.2f}")
 
 
 # --------------------------
@@ -86,14 +94,19 @@ if ema20 > ema50 and macd == "Bullish":
     score += 25
 elif ema20 < ema50 and macd == "Bearish":
     score -= 25
+# ADX Strength
+if adx >= 25:
+    score += 25
+else:
+    score -= 10
 
 confidence = f"{min(abs(score),100)}%"
 
-if score >= 50:
+if score >= 75:
     signal = "BUY 🟢"
     trend = "Bullish 🟢"
 
-elif score <= -50:
+elif score <= -75:
     signal = "SELL 🔴"
     trend = "Bearish 🔴"
 
