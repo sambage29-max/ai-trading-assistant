@@ -28,10 +28,7 @@ df_live = ticker.history(period="5d", interval="5m")
 
 price = float(df_live["Close"].iloc[-1])
 
-if signal.startswith("BUY"):
-    stop_loss = entry - (1.5 * atr)
-    target1 = entry + (2 * atr)
-    target2 = entry + (3 * atr)
+
 
 elif signal.startswith("SELL"):
     stop_loss = entry + (1.5 * atr)
@@ -210,7 +207,16 @@ with col2:
 st.metric("⚖️ Risk : Reward", risk_reward)
 
 st.subheader("📋 Market Summary")
+if signal.startswith("BUY"):
+    stop_loss = ...
+    target1 = ...
+    target2 = ...
 
+elif signal.startswith("SELL"):
+    ...
+
+else:
+    ...
 if signal == "BUY 🟢":
     st.success("✅ AI Recommendation: BUY")
 elif signal == "SELL 🔴":
