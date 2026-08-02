@@ -90,10 +90,7 @@ elif score <= -50:
 else:
     signal = "WAIT 🟡"
     trend = "Sideways 🟡"
-    signal = "BUY 🟢"
-    confidence = probability
-    trend = "Bullish 🟢"
-
+    
 
 # -----------------------
 # Title
