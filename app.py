@@ -149,9 +149,9 @@ with col2:
     st.metric("🧠 AI Signal", signal)
     st.metric("🎯 Confidence", confidence)
     st.metric("⭐ Trade Rating", trade_rating)
-
-    st.caption (
-f"✅ Last Updated : {datetime.now(ZoneInfo('Asia/Kolkata')).strftime('%H:%M:%S')}")
+    st.caption(
+        f"✅ Last Updated : {datetime.now(ZoneInfo('Asia/Kolkata')).strftime('%H:%M:%S')}"
+   
 # -----------------------
 # AI Analysis Table
 # -----------------------
