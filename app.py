@@ -54,6 +54,7 @@ atr = ta.volatility.AverageTrueRange(
     close=df_live["Close"],
     window=14
 ).average_true_range().iloc[-1]
+st.metric("📊 ATR", f"{atr:.2f}")
 
 
 # --------------------------
