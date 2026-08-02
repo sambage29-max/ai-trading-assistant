@@ -30,6 +30,11 @@ price = float(df_live["Close"].iloc[-1])
 
 
 
+if signal.startswith("BUY"):
+    stop_loss = entry - (1.5 * atr)
+    target1 = entry + (2 * atr)
+    target2 = entry + (3 * atr)
+
 elif signal.startswith("SELL"):
     stop_loss = entry + (1.5 * atr)
     target1 = entry - (2 * atr)
