@@ -54,10 +54,6 @@ else:
     signal = "WAIT 🟡"
     confidence = "75%"
 
-# ----------------------------
-# AI Score Engine
-# ----------------------------
-
 # --------------------------
 # AI Score Engine
 # --------------------------
@@ -84,16 +80,6 @@ if ema20 > ema50 and macd == "Bullish":
 score += 20
 
 probability = f"{score}%"
-
-if score >= 80:
-    signal = "BUY 🟢"
-    trend = "Bullish 🟢"
-elif score >= 60:
-    signal = "WAIT 🟡"
-    trend = "Sideways 🟡"
-else:
-    signal = "SELL 🔴"
-    trend = "Bearish 🔴"
 
 confidence = probability 
 if score >= 80:
