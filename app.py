@@ -203,10 +203,16 @@ st.metric("⚖️ Risk : Reward", risk_reward)
 st.subheader("📋 Market Summary")
 
 entry = price
-stop_loss = entry - 120
-target1 = entry + 180
-target2 = entry + 360
-risk_reward = "1 : 3"
+
+stop_loss = entry - (atr * 1.5)
+
+risk = entry - stop_loss
+
+target1 = entry + (risk * 2)
+
+target2 = entry + (risk * 3)
+
+risk_reward = "1 : 2 / 1 : 3"
 
 st.info(
     f"""
