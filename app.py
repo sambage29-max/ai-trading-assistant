@@ -94,15 +94,6 @@ else:
     confidence = probability
     trend = "Bullish 🟢"
 
-elif score >= 60:
-    signal = "WAIT 🟡"
-    confidence = probability
-    trend = "Sideways 🟡"
-
-else:
-    signal = "SELL 🔴"
-    confidence = probability
-    trend = "Bearish 🔴"
 
 # -----------------------
 # Title
