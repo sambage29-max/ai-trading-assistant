@@ -47,31 +47,6 @@ risk_reward = "1 : 2"
 
 chart_data = df_live["Close"].tail(30).tolist()
 
-rsi=ta.momentum.RSIIndicator(df_live["Close"]).rsi().iloc[-1]
-
-ema20 = ta.trend.EMAIndicator(df_live["Close"], window=20).ema_indicator().iloc[-1]
-ema50 = ta.trend.EMAIndicator(df_live["Close"], window=50).ema_indicator().iloc[-1]
-
-macd_line=ta.trend.MACD(df_live["Close"]).macd().iloc[-1]
-signal_line=ta.trend.MACD(df_live["Close"]).macd_signal().iloc[-1]
-
-macd = "Bullish" if macd_line > signal_line else "Bearish"
-
-atr = ta.volatility.AverageTrueRange(
-    high=df_live["High"],
-    low=df_live["Low"],
-    close=df_live["Close"],
-    window=14
-).average_true_range().iloc[-1]
-st.metric("📊 ATR", f"{atr:.2f}")
-adx = ta.trend.ADXIndicator(
-    high=df_live["High"],
-    low=df_live["Low"],
-    close=df_live["Close"],
-    window=14
-).adx().iloc[-1]
-
-st.metric("💪 ADX", f"{adx:.2f}")
 
 
 # --------------------------
