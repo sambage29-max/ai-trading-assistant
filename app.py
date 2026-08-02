@@ -70,7 +70,7 @@ if ema20 > ema50:
     score += 20
 
 # Trend Score
-if trend == "Bullish 🟢":
+if ema20 > ema50 and macd == "Bullish":
     score += 20
 
 # Base Score
