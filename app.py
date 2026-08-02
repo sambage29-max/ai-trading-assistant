@@ -28,22 +28,11 @@ df_live = ticker.history(period="5d", interval="5m")
 
 price = float(df_live["Close"].iloc[-1])
 
-
-
-if signal.startswith("BUY"):
-    stop_loss = entry - (1.5 * atr)
-    target1 = entry + (2 * atr)
-    target2 = entry + (3 * atr)
-
-elif signal.startswith("SELL"):
-    stop_loss = entry + (1.5 * atr)
-    target1 = entry - (2 * atr)
-    target2 = entry - (3 * atr)
-
-else:
-    stop_loss = entry
-    target1 = entry
-    target2 = entry
+entry = price
+stop_loss = entry - 120
+target1 = entry + 180
+target2 = entry + 360
+risk_reward = "1 : 3"
 
 risk_reward = "1 : 2"
 
