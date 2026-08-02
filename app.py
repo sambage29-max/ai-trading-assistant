@@ -4,6 +4,8 @@ import pandas as pd
 from datetime import datetime
 import requests
 import json
+import yfinance as yf
+import ta
 
 # -----------------------
 # Page Config
@@ -15,31 +17,32 @@ st.set_page_config(
 )
 
 # -----------------------
-# Demo Market Data
-# -----------------------
-price = 24383.60
+# --------------------------
+# Live Market Data
+# --------------------------
+
+ticker = yf.Ticker("^NSEI")
+df_live = ticker.history(period="5d", interval="5m")
+
+price = float(df_live["Close"].iloc[-1])
+
 entry = price
-
-stop_loss = price - 120
-
-target1 = price + 180
-
-target2 = price + 360
-
+stop_loss = entry - 120
+target1 = entry + 180
+target2 = entry + 360
 risk_reward = "1 : 3"
-chart_data = [
-    24210,
-    24250,
-    24280,
-    24310,
-    24290,
-    24340,
-    24383.60
-]
-rsi = 52.4
-macd = "Bullish"
-ema20 = 24320
-ema50 = 24180
+
+chart_data = df_live["Close"].tail(30).tolist()
+
+rsi=ta.momentum.RSIIndicator(df_live["Close"]).rsi().iloc[-1]
+
+ema20 = ta.trend.EMAIndicator(df_live["Close"], window=20).ema_indicator().iloc[-1]
+ema50 = ta.trend.EMAIndicator(df_live["Close"], window=50).ema_indicator().iloc[-1]
+
+macd_line=ta.trend.MACD(df_live["Close"]).macd().iloc[-1]
+signal_line=ta.trend.MACD(df_live["Close"]).macd_signal().iloc[-1]
+
+macd = "Bullish" if macd_line > signal_line else "Bearish"
 
 if rsi > 60 and macd == "Bullish":
     signal = "BUY 🟢"
