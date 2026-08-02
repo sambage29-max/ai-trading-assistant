@@ -168,6 +168,7 @@ Risk Reward : {risk_reward}
 
 else:
     st.warning("⚠️ No Trade Setup Available. Wait for a better opportunity.")
+
 # -----------------------
 # Metrics
 # -----------------------
