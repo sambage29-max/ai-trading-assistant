@@ -115,7 +115,7 @@ with col2:
     st.metric("📈 Trend", trend)
     st.metric("🧠 AI Signal", signal)
     st.metric("🎯 Confidence", confidence)
-    st.caption(f"✅ Last Updated :datetime.now(ZoneInfo("Asia/Kolkata")).strftime('%H:%M:%S')
+    st.caption(f"✅LastUpdated :datetime.now(ZoneInfo("Asia/Kolkata")).strftime('%H:%M:%S')
 # -----------------------
 # AI Analysis Table
 # -----------------------
