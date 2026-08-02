@@ -44,15 +44,8 @@ signal_line=ta.trend.MACD(df_live["Close"]).macd_signal().iloc[-1]
 
 macd = "Bullish" if macd_line > signal_line else "Bearish"
 
-if rsi > 60 and macd == "Bullish":
-    signal = "BUY 🟢"
-    confidence = "90%"
-elif rsi < 40 and macd == "Bearish":
-    signal = "SELL 🔴"
-    confidence = "90%"
-else:
-    signal = "WAIT 🟡"
-    confidence = "75%"
+
+
 
 # --------------------------
 # AI Score Engine
