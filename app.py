@@ -100,6 +100,17 @@ elif adx >= 20:
 
 confidence_score = min(confidence_score, 100)
 confidence = f"{confidence_score}%"
+# Trade Rating
+if confidence_score >= 90:
+    trade_rating = "⭐⭐⭐⭐⭐"
+elif confidence_score >= 75:
+    trade_rating = "⭐⭐⭐⭐"
+elif confidence_score >= 60:
+    trade_rating = "⭐⭐⭐"
+elif confidence_score >= 40:
+    trade_rating = "⭐⭐"
+else:
+    trade_rating = "⭐"
 
 if score >= 75:
     signal = "BUY 🟢"
@@ -137,6 +148,8 @@ with col2:
     st.metric("📈 Trend", trend)
     st.metric("🧠 AI Signal", signal)
     st.metric("🎯 Confidence", confidence)
+st.metric("⭐ Trade Rating", trade_rating)
+
     st.caption(f"✅ Last Updated : {datetime.now(ZoneInfo('Asia/Kolkata')).strftime('%H:%M:%S')}")
 # -----------------------
 # AI Analysis Table
