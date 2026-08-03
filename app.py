@@ -201,7 +201,18 @@ with col2:
     st.metric("📈 Trend", trend)
     st.metric("🧠 AI Signal", signal)
     st.metric("🎯 Confidence", confidence)
-    st.metric("⭐ Trade Rating", trade_rating)
+    st.subheader("⭐ Trade Rating")
+
+if confidence_score >= 90:
+    st.success(f"{trade_rating}  Excellent Trade")
+elif confidence_score >= 75:
+    st.success(f"{trade_rating}  Good Trade")
+elif confidence_score >= 60:
+    st.warning(f"{trade_rating}  Average Trade")
+elif confidence_score >= 40:
+    st.warning(f"{trade_rating}  Risky Trade")
+else:
+    st.error(f"{trade_rating}  Avoid Trade")
     st.caption(f"✅ Last Updated : {datetime.now(ZoneInfo('Asia/Kolkata')).strftime('%H:%M:%S')}")
 # -----------------------
 # AI Analysis Table
