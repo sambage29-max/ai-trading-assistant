@@ -88,13 +88,17 @@ else:
     score -= 10
 
 # AI Confidence Score
-confidence_score = min(abs(score), 100)
+confidence_score = abs(score)
+
 if adx >= 30:
     confidence_score += 15
 elif adx >= 25:
     confidence_score += 10
 elif adx >= 20:
     confidence_score += 5
+
+confidence_score = min(confidence_score, 100)
+confidence = f"{confidence_score}%"
 
 
 confidence = f"{confidence_score}%"
