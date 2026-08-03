@@ -56,12 +56,14 @@ def calculate_indicators(df_live):
         candle = "Doji 🟡"
 
     return {
-        "price": price,
-        "rsi": rsi,
-        "ema20": ema20,
-        "ema50": ema50,
-        "macd": macd,
-        "atr": atr,
-        "adx": adx,
-        "candle": candle
-    }
+    "price": price,
+    "rsi": rsi,
+    "ema20": ema20,
+    "ema50": ema50,
+    "macd": macd,
+    "atr": atr,
+    "adx": adx,
+    "candle": candle,
+    "volume": float(df_live["Volume"].iloc[-1]),
+    "avg_volume": float(df_live["Volume"].rolling(20).mean().iloc[-1])
+}
