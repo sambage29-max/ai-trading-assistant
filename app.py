@@ -37,6 +37,7 @@ ema50 = data["ema50"]
 macd = data["macd"]
 atr = data["atr"]
 adx = data["adx"]
+candle = data["candle"]
 entry = price
 stop_loss = round(entry - (atr * 1.5), 2)
 target1 = round(entry + (atr * 2), 2)
