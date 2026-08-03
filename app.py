@@ -274,6 +274,8 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True) 
 st.markdown("---")
 
+st.subheader("🕯️ Current Candle")
+st.info(candle)
 st.subheader("📊 AI Score")
 
 col1, col2, col3 = st.columns(3)
