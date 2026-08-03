@@ -26,7 +26,10 @@ def calculate_indicators(df_live):
         df_live["Close"]
     ).macd_signal().iloc[-1]
 
-    macd = "Bullish" if macd_line > signal_line else "Bearish"
+    if macd_line > signal_line:
+    macd = "Bullish"
+else:
+    macd = "Bearish"
 
     atr = ta.volatility.AverageTrueRange(
         high=df_live["High"],
