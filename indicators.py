@@ -41,13 +41,24 @@ def calculate_indicators(df_live):
         close=df_live["Close"],
         window=14
     ).adx().iloc[-1]
+# Current Candle
+open_price = float(df_live["Open"].iloc[-1])
+close_price = float(df_live["Close"].iloc[-1])
 
-    return {
-        "price": price,
-        "rsi": rsi,
-        "ema20": ema20,
-        "ema50": ema50,
-        "macd": macd,
-        "atr": atr,
-        "adx": adx
-    }
+if close_price > open_price:
+    candle = "Bullish 🟢"
+elif close_price < open_price:
+    candle = "Bearish 🔴"
+else:
+    candle = "Doji 🟡"
+
+return {
+    "price": price,
+    "rsi": rsi,
+    "ema20": ema20,
+    "ema50": ema50,
+    "macd": macd,
+    "atr": atr,
+    "adx": adx,
+    "candle": candle
+}
