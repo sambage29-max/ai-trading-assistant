@@ -38,10 +38,9 @@ macd = data["macd"]
 atr = data["atr"]
 adx = data["adx"]
 entry = price
-stop_loss = entry - 120
-target1 = entry + 180
-target2 = entry + 360
-risk_reward = "1 : 3"
+stop_loss = round(entry - (atr * 1.5), 2)
+target1 = round(entry + (atr * 2), 2)
+target2 = round(entry + (atr * 4), 2)
 
 risk_reward = "1 : 2"
 
