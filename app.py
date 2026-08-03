@@ -321,6 +321,9 @@ with col2:
 
 st.metric("⚖️ Risk : Reward", risk_reward)
 
+st.subheader("🌍 Market Mood")
+st.success(market_mood)
+
 st.subheader("📋 Market Summary")
 
 entry = price
