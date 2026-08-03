@@ -103,6 +103,21 @@ confidence = f"{confidence_score}%"
 
 
 confidence = f"{confidence_score}%"
+# ===========================
+# MARKET MOOD
+# ===========================
+
+if score >= 80:
+    market_mood = "🚀 Strong Bullish"
+elif score >= 60:
+    market_mood = "🟢 Bullish"
+elif score >= 40:
+    market_mood = "🟡 Sideways"
+elif score >= 20:
+    market_mood = "🟠 Weak Bearish"
+else:
+    market_mood = "🔴 Strong Bearish"
+
 # Trade Rating
 if confidence_score >= 90:
     trade_rating = "⭐⭐⭐⭐⭐"
