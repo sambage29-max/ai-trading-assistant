@@ -22,19 +22,29 @@ st.set_page_config(
 
 # -----------------------
 # --------------------------
+ 
+# --------------------------
 # Live Market Data
 # --------------------------
-
 
 ticker = yf.Ticker("^NSEI")
 
 try:
-    df_live = ticker.history(period="1mo", interval="1d")
-except:
-    st.error("Yahoo Finance rate limit reached. Please try again after a few minutes.")
+    df_live = ticker.history(
+        period="5d",
+        interval="15m",
+        auto_adjust=True
+    )
+
+    if df_live.empty:
+        st.error("No market data received.")
+        st.stop()
+
+except Exception as e:
+    st.error(f"Market Data Error : {e}")
     st.stop()
 
-price = float(df_live["Close"].iloc[-1])
+# Calculate Indicators
 data = calculate_indicators(df_live)
 
 price = data["price"]
@@ -45,6 +55,7 @@ macd = data["macd"]
 atr = data["atr"]
 adx = data["adx"]
 candle = data["candle"]
+
 entry = price
 stop_loss = round(entry - (atr * 1.5), 2)
 target1 = round(entry + (atr * 2), 2)
@@ -53,6 +64,16 @@ target2 = round(entry + (atr * 4), 2)
 risk_reward = "1 : 2"
 
 chart_data = df_live["Close"].tail(30).tolist()
+price = float(df_live["Close"].iloc[-1])
+data = calculate_indicators(df_live)
+
+price = data["price"]
+rsi = data["rsi"]
+ema20 = data["ema20"]
+ema50 = data["ema50"]
+macd = data["macd"]
+atr = data["atr"]
+adx = data["
 
 
 
