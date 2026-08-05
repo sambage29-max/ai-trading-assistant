@@ -10,7 +10,6 @@ import yfinance as yf
 import ta
 from indicators import calculate_indicators
 from ai_engine import ai_decision
-from upstox_client import Configuration, ApiClient, MarketQuoteApi
 
 # -----------------------
 # Page Config
