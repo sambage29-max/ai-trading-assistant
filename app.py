@@ -27,19 +27,15 @@ st.set_page_config(
 # --------------------------
 
 
-config = Configuration()
-config.access_token = st.secrets["UPSTOX_ACCESS_TOKEN"]
+ticker = yf.Ticker("^NSEI")
 
-api_client = ApiClient(config)
-market_api = MarketQuoteApi(api_client)
+try:
+    df_live = ticker.history(period="1mo", interval="1d")
+except:
+    st.error("Yahoo Finance rate limit reached. Please try again after a few minutes.")
+    st.stop()
 
-quote = market_api.get_full_market_quote(
-    symbol="NSE_INDEX|Nifty 50"
-)
-
-price = float(
-    quote.data["NSE_INDEX|Nifty 50"].last_price
-)
+price = float(df_live["Close"].iloc[-1])
 data = calculate_indicators(df_live)
 
 price = data["price"]
