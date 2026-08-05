@@ -26,7 +26,12 @@ st.set_page_config(
 # --------------------------
 
 ticker = yf.Ticker("^NSEI")
-df_live = ticker.history(period="5d", interval="5m")
+
+try:
+    df_live = ticker.history(period="5d", interval="5m")
+except:
+    st.error("Yahoo Finance rate limit reached. Please try again after a few minutes.")
+    st.stop()
 
 price = float(df_live["Close"].iloc[-1])
 data = calculate_indicators(df_live)
