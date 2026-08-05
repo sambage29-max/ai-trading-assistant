@@ -78,43 +78,23 @@ adx = data["
 
 
 # --------------------------
-# AI Score Engine
-# --------------------------
+signal, score, confidence_score, trade_rating, market_mood, buy_probability, sell_probability, reasons = ai_decision(
+    rsi,
+    ema20,
+    ema50,
+    macd,
+    adx,
+    candle,
+)
 
-score = 0
+confidence = f"{confidence_score}%"
 
-# RSI
-if rsi >= 60:
-    score += 25
-elif rsi <= 40:
-    score -= 25
-
-# MACD
-if macd == "Bullish":
-    score += 25
+if signal == "BUY 🟢":
+    trend = "Bullish 🟢"
+elif signal == "SELL 🔴":
+    trend = "Bearish 🔴"
 else:
-    score -= 25
-
-# EMA
-if ema20 > ema50:
-    score += 25
-else:
-    score -= 25
-
-# Trend Strength
-if ema20 > ema50 and macd == "Bullish":
-    score += 25
-elif ema20 < ema50 and macd == "Bearish":
-    score -= 25
-# ADX Strength
-if adx >= 30:
-    score += 20
-elif adx >= 25:
-    score += 10
-elif adx >= 20:
-    score += 0
-else:
-    score -= 10
+    trend = "Sideways 🟡"
 
 # AI Confidence Score
 confidence_score = abs(score)
@@ -247,39 +227,11 @@ else:
 # -----------------------
 st.markdown("---")
 st.subheader("📝 AI Reason")
-buy_probability = max(score, 0)
-sell_probability = max(-score, 0)
-
-total = buy_probability + sell_probability
-
-if total > 0:
-    buy_probability = int((buy_probability / total) * 100)
-    sell_probability = 100 - buy_probability
-else:
-    buy_probability = 50
-    sell_probability = 50
-
-reason = []
-
-if rsi >= 60:
-    reason.append("✅ RSI Bullish")
-elif rsi <= 40:
-    reason.append("🔴 RSI Bearish")
-else:
-    reason.append("🟡 RSI Neutral")
-
-reason.append(f"{'✅' if macd == 'Bullish' else '🔴'} MACD {macd}")
-
-reason.append(f"{'✅' if ema20 > ema50 else '🔴'} EMA Trend")
-
-if adx >= 25:
-    reason.append("✅ Strong Trend")
-else:
-    reason.append("🟡 Weak Trend")
-
 for item in reason:
     st.write(item)
-st.markdown("---")
+
+for item in reasons:
+    st.write(item)
 
 st.write(f"🟢 BUY Probability : {buy_probability}%")
 st.progress(buy_probability)
