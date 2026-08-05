@@ -6,10 +6,11 @@ import pandas as pd
 import plotly.graph_objects as go
 import requests
 import json
-import yfinance as yf
 import ta
 from indicators import calculate_indicators
 from ai_engine import ai_decision
+from upstox_client import Configuration, ApiClient, HistoryApi
+import streamlit as st
 
 # -----------------------
 # Page Config
@@ -30,8 +31,26 @@ st.set_page_config(
 @st.cache_data(ttl=60)
 def get_market_data():
    
+@st.cache_data(ttl=60)
+def get_market_data():
 
-df_live = get_market_data()
+    config = Configuration()
+    config.access_token = st.secrets["UPSTOX_ACCESS_TOKEN"]
+
+    api_client = ApiClient(config)
+    history_api = HistoryApi(api_client)
+
+    return history_api.get_historical_candle_data(
+        instrument_key="NSE_INDEX|Nifty 50",
+        interval="15minute",
+        to_date="",
+        from_date=""
+    )
+try:
+    response = get_market_data()
+except Exception as e:
+    st.error(e)
+    st.stop()
 
     if df_live.empty:
         st.error("No market data received.")
@@ -41,8 +60,20 @@ except Exception as e:
     st.error(f"Market Data Error : {e}")
     st.stop()
 
-# Calculate Indicators
-data = calculate_indicators(df_live)
+config = Configuration()
+
+config.access_token = st.secrets["UPSTOX_ACCESS_TOKEN"]
+
+api_client = ApiClient(config)
+
+history_api = HistoryApi(api_client)
+
+response = history_api.get_historical_candle_data(
+    instrument_key="NSE_INDEX|Nifty 50",
+    interval="15minute",
+    to_date="",
+    from_date=""
+)
 
 price = data["price"]
 rsi = data["rsi"]
