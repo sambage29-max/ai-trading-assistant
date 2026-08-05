@@ -29,12 +29,7 @@ st.set_page_config(
 
 @st.cache_data(ttl=60)
 def get_market_data():
-    ticker = yf.Ticker("^NSEI")
-    return ticker.history(
-        period="5d",
-        interval="15m",
-        auto_adjust=True
-    )
+   
 
 df_live = get_market_data()
 
