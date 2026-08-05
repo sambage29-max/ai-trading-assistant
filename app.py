@@ -9,6 +9,7 @@ import json
 import yfinance as yf
 import ta
 from indicators import calculate_indicators
+from ai_engine import ai_decision
 
 # -----------------------
 # Page Config
