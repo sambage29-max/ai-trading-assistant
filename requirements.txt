@@ -1,8 +1,9 @@
-streamlit
-requests
-pandas
-streamlit-autorefresh
-plotly
-numpy
-ta
-yfinance
+streamlit==1.39.0
+starlette==0.40.0
+requests==2.32.3
+pandas==2.2.3
+plotly==5.24.1
+numpy==2.1.3
+ta==0.11.0
+yfinance==0.2.54
+streamlit-autorefresh==1.0.1
