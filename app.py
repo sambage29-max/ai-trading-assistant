@@ -29,7 +29,7 @@ st.set_page_config(
 
 @st.cache_data(ttl=30)
 def get_live_data():
-    ticker = yf.Ticker("^NSEI")
+    ticker = yf.Ticker("^NSEBANK")
     return ticker.history(
         period="5d",
         interval="15m",
