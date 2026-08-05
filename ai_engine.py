@@ -62,4 +62,42 @@ elif score <= -25:
 else:
     signal = "WAIT"
 
-return signal, score
+# Confidence Score
+confidence_score = abs(score)
+
+if confidence_score >= 75:
+    trade_rating = "⭐⭐⭐⭐⭐"
+
+elif confidence_score >= 50:
+    trade_rating = "⭐⭐⭐⭐"
+
+elif confidence_score >= 25:
+    trade_rating = "⭐⭐⭐"
+
+else:
+    trade_rating = "⭐⭐"
+
+# Market Mood
+
+if score >= 75:
+    market_mood = "🚀 Strong Bullish"
+
+elif score >= 25:
+    market_mood = "🟢 Bullish"
+
+elif score <= -75:
+    market_mood = "🔴 Strong Bearish"
+
+elif score <= -25:
+    market_mood = "🟠 Bearish"
+
+else:
+    market_mood = "🟡 Sideways"
+
+return (
+    signal,
+    score,
+    confidence_score,
+    trade_rating,
+    market_mood,
+)
