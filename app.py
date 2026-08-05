@@ -27,14 +27,17 @@ st.set_page_config(
 # Live Market Data
 # --------------------------
 
-ticker = yf.Ticker("^NSEI")
-
-try:
-    df_live = ticker.history(
+@st.cache_data(ttl=30)
+def get_live_data():
+    ticker = yf.Ticker("^NSEI")
+    return ticker.history(
         period="5d",
         interval="15m",
         auto_adjust=True
     )
+
+try:
+    df_live = get_live_data()
 
     if df_live.empty:
         st.error("No market data received.")
