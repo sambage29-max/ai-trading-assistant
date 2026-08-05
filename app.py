@@ -49,7 +49,9 @@ def get_market_data():
 try:
     response = get_market_data()
 except Exception as e:
-    st.error(e)
+    import traceback
+    st.exception(e)
+    st.code(traceback.format_exc())
     st.stop()
 
     if df_live.empty:
