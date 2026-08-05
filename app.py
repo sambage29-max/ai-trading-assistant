@@ -10,6 +10,7 @@ import yfinance as yf
 import ta
 from indicators import calculate_indicators
 from ai_engine import ai_decision
+from upstox_client import Configuration, ApiClient, MarketQuoteApi
 
 # -----------------------
 # Page Config
@@ -25,15 +26,20 @@ st.set_page_config(
 # Live Market Data
 # --------------------------
 
-ticker = yf.Ticker("^NSEI")
 
-try:
-    df_live = ticker.history(period="1mo", interval="1d")
-except Exception as e:
-    st.error(str(e))
-    st.stop()
+config = Configuration()
+config.access_token = st.secrets["UPSTOX_ACCESS_TOKEN"]
 
-price = float(df_live["Close"].iloc[-1])
+api_client = ApiClient(config)
+market_api = MarketQuoteApi(api_client)
+
+quote = market_api.get_full_market_quote(
+    symbol="NSE_INDEX|Nifty 50"
+)
+
+price = float(
+    quote.data["NSE_INDEX|Nifty 50"].last_price
+)
 data = calculate_indicators(df_live)
 
 price = data["price"]
