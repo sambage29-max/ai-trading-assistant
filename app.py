@@ -63,17 +63,6 @@ target2 = round(entry + (atr * 4), 2)
 
 risk_reward = "1 : 2"
 
-chart_data = df_live["Close"].tail(30).tolist()
-price = float(df_live["Close"].iloc[-1])
-data = calculate_indicators(df_live)
-
-price = data["price"]
-rsi = data["rsi"]
-ema20 = data["ema20"]
-ema50 = data["ema50"]
-macd = data["macd"]
-atr = data["atr"]
-adx = data["
 
 
 
