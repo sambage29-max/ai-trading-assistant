@@ -39,36 +39,6 @@ def get_market_data():
     history_api = HistoryApi(api_client)
 
     return history_api.get_historical_candle_data(
-        instrument_key="NSE_INDEX|Nifty 50",
-        interval="15minute",
-        to_date="",
-        from_date=""
-    )
-try:
-    response = get_market_data()
-except Exception as e:
-    import traceback
-    st.exception(e)
-    st.code(traceback.format_exc())
-    st.stop()
-
-    if df_live.empty:
-        st.error("No market data received.")
-        st.stop()
-
-except Exception as e:
-    st.error(f"Market Data Error : {e}")
-    st.stop()
-
-config = Configuration()
-
-config.access_token = st.secrets["UPSTOX_ACCESS_TOKEN"]
-
-api_client = ApiClient(config)
-
-history_api = HistoryApi(api_client)
-
-return history_api.get_historical_candle_data(
     instrument_key="NSE_INDEX|Nifty 50",
     interval="15minute",
     to_date="",
@@ -76,6 +46,21 @@ return history_api.get_historical_candle_data(
     api_version="2.0"
 )
 
+@st.cache_data(ttl=60)
+def get_market_data():
+    config = Configuration()
+    config.access_token = st.secrets["UPSTOX_ACCESS_TOKEN"]
+
+    api_client = ApiClient(config)
+    history_api = HistoryApi(api_client)
+
+    return history_api.get_historical_candle_data(
+        instrument_key="NSE_INDEX|Nifty 50",
+        interval="15minute",
+        to_date="",
+        from_date="",
+        api_version="2.0"
+    )
 price = data["price"]
 rsi = data["rsi"]
 ema20 = data["ema20"]
