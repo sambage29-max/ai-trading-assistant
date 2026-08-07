@@ -190,12 +190,12 @@ else:
 # AI Analysis Table
 # -----------------------
 st.markdown("---")
+
 st.subheader("📝 AI Reason")
-for item in reason:
-    st.write(item)
 
 for item in reasons:
     st.write(item)
+
 
 st.write(f"🟢 BUY Probability : {buy_probability}%")
 st.progress(buy_probability)
