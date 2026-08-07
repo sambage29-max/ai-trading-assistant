@@ -28,23 +28,9 @@ st.set_page_config(
 # Live Market Data
 # --------------------------
 
-@st.cache_data(ttl=60)
-def get_market_data():
-
-
-    config = Configuration()
-    config.access_token = st.secrets["UPSTOX_ACCESS_TOKEN"]
-
-    api_client = ApiClient(config)
-    history_api = HistoryApi(api_client)
-
-    return history_api.get_historical_candle_data(
-    instrument_key="NSE_INDEX|Nifty 50",
-    interval="15minute",
-    to_date="",
-    from_date="",
-    api_version="2.0"
-)
+# --------------------------
+# Live Market Data
+# --------------------------
 
 @st.cache_data(ttl=60)
 def get_market_data():
@@ -54,21 +40,15 @@ def get_market_data():
     api_client = ApiClient(config)
     history_api = HistoryApi(api_client)
 
-    return history_api.get_historical_candle_data(
+    response = history_api.get_historical_candle_data(
         instrument_key="NSE_INDEX|Nifty 50",
         interval="15minute",
         to_date="",
         from_date="",
         api_version="2.0"
     )
-price = data["price"]
-rsi = data["rsi"]
-ema20 = data["ema20"]
-ema50 = data["ema50"]
-macd = data["macd"]
-atr = data["atr"]
-adx = data["adx"]
-candle = data["candle"]
+
+    return response
 
 entry = price
 stop_loss = round(entry - (atr * 1.5), 2)
