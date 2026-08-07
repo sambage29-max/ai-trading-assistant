@@ -23,7 +23,22 @@ st.set_page_config(
  
 # --------------------------
 
-# Temporary dummy values
+df = calculate_indicators(data)
+
+price = float(df["Close"].iloc[-1])
+rsi = float(df["RSI"].iloc[-1])
+ema20 = float(df["EMA20"].iloc[-1])
+ema50 = float(df["EMA50"].iloc[-1])
+atr = float(df["ATR"].iloc[-1])
+adx = float(df["ADX"].iloc[-1])
+
+macd = "Bullish 🟢" if df["MACD"].iloc[-1] > df["MACD_Signal"].iloc[-1] else "Bearish 🔴"
+
+candle = (
+    "Bullish"
+    if df["Close"].iloc[-1] > df["Open"].iloc[-1]
+    else "Bearish"
+)
 
 response = get_market_data()
 
