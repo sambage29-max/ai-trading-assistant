@@ -1,4 +1,4 @@
-from datetime import datetime
+.from datetime import datetime
 from zoneinfo import ZoneInfo
 
 import streamlit as st
@@ -22,33 +22,22 @@ st.set_page_config(
 )
  
 # --------------------------
-# Live Market Data
 
-@st.cache_data(ttl=60)
-def get_market_data():
-    config = Configuration()
-    config.access_token = st.secrets["UPSTOX_ACCESS_TOKEN"]
-
-    api_client = ApiClient(config)
-    history_api = HistoryApi(api_client)
-
-    response = history_api.get_historical_candle_data(
-        instrument_key="NSE_INDEX|Nifty 50",
-        interval="15minute",
-        to_date="",
-        from_date="",
-        api_version="2.0"
-    )
-
-    return response
+# Temporary dummy values
+price = 25000.00
+rsi = 55.0
+ema20 = 24980.0
+ema50 = 24920.0
+macd = 15.5
+atr = 120.0
+adx = 28.0
+candle = "Bullish"
 
 entry = price
 stop_loss = round(entry - (atr * 1.5), 2)
 target1 = round(entry + (atr * 2), 2)
 target2 = round(entry + (atr * 4), 2)
-
 risk_reward = "1 : 2"
-
 
 
 
