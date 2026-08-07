@@ -223,6 +223,9 @@ df = pd.DataFrame({
 })
 
 st.dataframe(df, use_container_width=True)
+
+chart_data = [24850, 24900, 24950, 25000, 24980, 25020, 25000]
+
 st.subheader("📈 NIFTY Trend Chart")
 
 fig = go.Figure()
