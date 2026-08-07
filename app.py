@@ -68,11 +68,12 @@ api_client = ApiClient(config)
 
 history_api = HistoryApi(api_client)
 
-response = history_api.get_historical_candle_data(
+return history_api.get_historical_candle_data(
     instrument_key="NSE_INDEX|Nifty 50",
     interval="15minute",
     to_date="",
-    from_date=""
+    from_date="",
+    api_version="2.0"
 )
 
 price = data["price"]
