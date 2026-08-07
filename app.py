@@ -31,15 +31,7 @@ data = response.data.candles
 
 latest = data[-1]
 
-price = float(latest[4])
-price = 25000.00
-rsi = 55.0
-ema20 = 24980.0
-ema50 = 24920.0
-macd = 15.5
-atr = 120.0
-adx = 28.0
-candle = "Bullish"
+
 
 entry = price
 stop_loss = round(entry - (atr * 1.5), 2)
