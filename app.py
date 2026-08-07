@@ -38,7 +38,7 @@ candle = (
     "Bullish"
     if df["Close"].iloc[-1] > df["Open"].iloc[-1]
     else "Bearish"
-)
+) 
 
 response = get_market_data()
 
