@@ -30,9 +30,7 @@ st.set_page_config(
 
 @st.cache_data(ttl=60)
 def get_market_data():
-   
-@st.cache_data(ttl=60)
-def get_market_data():
+
 
     config = Configuration()
     config.access_token = st.secrets["UPSTOX_ACCESS_TOKEN"]
