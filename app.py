@@ -20,17 +20,9 @@ st.set_page_config(
     page_icon="📈",
     layout="wide"
 )
-
-# -----------------------
-# --------------------------
  
 # --------------------------
 # Live Market Data
-# --------------------------
-
-# --------------------------
-# Live Market Data
-# --------------------------
 
 @st.cache_data(ttl=60)
 def get_market_data():
