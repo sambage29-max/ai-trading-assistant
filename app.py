@@ -24,6 +24,14 @@ st.set_page_config(
 # --------------------------
 
 # Temporary dummy values
+
+response = get_market_data()
+
+data = response.data.candles
+
+latest = data[-1]
+
+price = float(latest[4])
 price = 25000.00
 rsi = 55.0
 ema20 = 24980.0
