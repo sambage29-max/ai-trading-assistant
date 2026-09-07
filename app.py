@@ -11,17 +11,15 @@ st.title("🚀 Personal AI Trading Dashboard")
 st.sidebar.header("🔑 Upstox Credentials")
 API_KEY = st.sidebar.text_input("Enter API Key:", type="password")
 API_SECRET = st.sidebar.text_input("Enter API Secret:", type="password")
-REDIRECT_URI = st.sidebar.text_input("Redirect URI:", value="http://localhost:8501")
+REDIRECT_URI = st.sidebar.text_input("Redirect URI:", value="https://google.com")
 
 if "access_token" not in st.session_state:
     st.session_state.access_token = None
 
- if API_KEY and API_SECRET:
-    # Upstox API V2 standard structural login URL framework
-    base_auth_url = "https://upstox.com"
-    auth_url = f"{base_auth_url}?response_type=code&client_id={API_KEY}&redirect_uri={REDIRECT_URI}"
+if API_KEY and API_SECRET:
+    # URL structure ko ekdam direct string format me convert kar diya hai
+    auth_url = f"https://upstox.com{API_KEY}&redirect_uri={REDIRECT_URI}"
     st.sidebar.markdown(f"[🔗 Click here to Login & Authorize]({auth_url})")
-
     
     auth_code = st.sidebar.text_input("Paste Redirected URL Code (?code=):")
     
