@@ -22,33 +22,39 @@ st.set_page_config(
 )
  
 # --------------------------
-import pandas as pd
 
-# Maan lete hain tumhara raw data 'dummy_data' naam ke variable me hai
-dummy_data = [
-    ["2026-08-07", 25160, 25200, 25140, 25190, 260000],
-    ["2026-08-07", 25190, 25220, 25170, 25200, 270000],
-    # ... baki ka saara data jo screenshot me hai
-]
-
-# --- ISKO AISAY BADLO ---
-
-# 1. Column ke names define karo jo Upstox API deta hai
-columns = ["Date", "Open", "High", "Low", "Close", "Volume"]
-
-# 2. List ko Pandas DataFrame me badlo
-df_live = pd.DataFrame(dummy_data, columns=columns)
-
-# 3. Date column ko datetime format me badal lo (Best practice)
-df_live["Date"] = pd.to_datetime(df_live["Date"])
-
-# Ab agar tumhara code niche yeh check karega, toh smoothly chalega:
-# price = float(df_live["Close"].iloc[-1])
-
-
-response = get_market_data()
-
-data = response.data.candles
+def get_market_data():
+    # Asli data ko list me daala
+    dummy_data = [
+        ["2026-08-07", 25130, 25180, 25110, 25160, 250000],
+        ["2026-08-07", 25160, 25200, 25140, 25190, 260000],
+        ["2026-08-07", 25190, 25220, 25170, 25200, 270000],
+        ["2026-08-07", 25200, 25240, 25180, 25210, 280000],
+        ["2026-08-07", 25210, 25250, 25190, 25220, 290000],
+        ["2026-08-07", 25220, 25260, 25200, 25240, 300000],
+        ["2026-08-07", 25240, 25280, 25220, 25260, 310000],
+        ["2026-08-07", 25260, 25300, 25240, 25290, 320000],
+        ["2026-08-07", 25290, 25320, 25270, 25310, 330000],
+        ["2026-08-07", 25310, 25350, 25290, 25340, 340000],
+        ["2026-08-07", 25340, 25370, 25320, 25360, 350000],
+        ["2026-08-07", 25360, 25400, 25340, 25390, 360000],
+        ["2026-08-07", 25390, 25420, 25370, 25400, 370000],
+        ["2026-08-07", 25400, 25450, 25380, 25420, 380000],
+        ["2026-08-07", 25420, 25480, 25400, 25460, 390000],
+        ["2026-08-07", 25460, 25500, 25440, 25480, 400000]
+    ]
+    
+    # Column names setup kiye
+    columns = ["Date", "Open", "High", "Low", "Close", "Volume"]
+    
+    # Pandas DataFrame banaya
+    df_live = pd.DataFrame(dummy_data, columns=columns)
+    
+    # Date ko standard format me badla
+    df_live["Date"] = pd.to_datetime(df_live["Date"])
+    
+    # Yeh DataFrame return hoga jisse niche wala code crash nahi karega
+    return df_live
 
 latest = data[-1]
 
