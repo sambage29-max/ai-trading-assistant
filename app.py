@@ -16,9 +16,12 @@ REDIRECT_URI = st.sidebar.text_input("Redirect URI:", value="http://localhost:85
 if "access_token" not in st.session_state:
     st.session_state.access_token = None
 
-if API_KEY and API_SECRET:
-    auth_url = f"https://upstox.com{API_KEY}&redirect_uri={REDIRECT_URI}"
+ if API_KEY and API_SECRET:
+    # Upstox API V2 standard structural login URL framework
+    base_auth_url = "https://upstox.com"
+    auth_url = f"{base_auth_url}?response_type=code&client_id={API_KEY}&redirect_uri={REDIRECT_URI}"
     st.sidebar.markdown(f"[🔗 Click here to Login & Authorize]({auth_url})")
+
     
     auth_code = st.sidebar.text_input("Paste Redirected URL Code (?code=):")
     
