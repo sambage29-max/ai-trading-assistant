@@ -23,6 +23,7 @@ if not st.session_state.access_token:
         auth_url = "https://upstox.com"
 
 
+
         
         st.markdown(f"👉 **[CLICK HERE TO LOGIN & AUTHORIZE APP]({auth_url})**")
     else:
