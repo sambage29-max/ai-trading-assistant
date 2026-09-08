@@ -2,19 +2,7 @@ import streamlit as st
 import requests
 
 # --- CONFIGURATION ---
-API_KEY = "271254f3-895f-4e4d-adc2-52146b6686c1"
-API_SECRET = "yqo95s1v6n"
-redirect_uri = "http://localhost:8501/"
 
-st.title("🚀 Personal AI Trading Dashboard")
-
-# --- AUTHENTICATION FLOW ---
-if "access_token" not in st.session_state:
-    st.session_state.access_token = None
-
-if not st.session_state.access_token:
-    st.write("### 🔥 STEP 1: LOGIN TO UPSTOX")
-    
     # FIX: Correct direct authentication link
     auth_url = f"https://upstox.com{API_KEY}&redirect_uri={redirect_uri}"
     
