@@ -10,7 +10,8 @@ st.title("🚀 Personal AI Trading Dashboard")
 # Bhai yahan apni asli credentials copy-paste kar do
 API_KEY = "271254f3-895f-4e4d-adc2-52146b6686c1" 
 API_SECRET = "yqo95s1v6n"
-REDIRECT_URI = "https://google.com"
+redirect_uri = "http://localhost:8501/"
+
 
 if "access_token" not in st.session_state:
     st.session_state.access_token = None
