@@ -17,9 +17,11 @@ if "access_token" not in st.session_state:
     st.session_state.access_token = None
 
 # Purely hardcoded strict URL bypass mechanism
+ # Correct Developer Authentication URL Flow
 if API_KEY and API_KEY != "YOUR_API_KEY_HERE":
-    base_url = "https://upstox.com"
-    auth_url = f"{base_url}?response_type=code&client_id={API_KEY}&redirect_uri={REDIRECT_URI}"
+    # यहाँ नॉर्मल upstox.com की जगह api एंडपॉइंट आएगा
+    auth_url = f"https://upstox.com{API_KEY}&redirect_uri={redirect_uri}"
+
     
     st.markdown("### 🔥 STEP 1: LOGIN TO UPSTOX")
     st.markdown(f"## [👉 CLICK HERE TO LOGIN & AUTHORIZE APP]({auth_url})")
