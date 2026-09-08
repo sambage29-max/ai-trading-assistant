@@ -21,6 +21,7 @@ if not st.session_state.access_token:
     if API_KEY and API_KEY != "YOUR_API_KEY_HERE":
         # बिल्कुल सही और फ्रेश Upstox v2 API ऑथेंटिकेशन URL
         auth_url = f"https://upstox.com{API_KEY}&redirect_uri={redirect_uri}"
+
         
         st.markdown(f"👉 **[CLICK HERE TO LOGIN & AUTHORIZE APP]({auth_url})**")
     else:
