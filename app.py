@@ -189,8 +189,12 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             is_real_signal = True
             
         # LIVE DEEPSEEK ANALYSIS INTERACTION POINT
-        with st.spinner("🤖 Consulting DeepSeek AI Intelligence Overlay..."):
-            deepseek_insights = get_deepseek_decision(script_selector, round(current_price, 2), round(current_rsi, 2), signal_output)
+        deepseek_insights = "DeepSeek API Pending Connection / Offline Mode"
+        try:
+            with st.spinner("🤖 Consulting DeepSeek AI Intelligence Overlay..."):
+                deepseek_insights = get_deepseek_decision(script_selector, round(current_price, 2), round(current_rsi, 2), signal_output)
+        except:
+            pass
             
         # TELEGRAM LIVE ALERTS LOGIC TRIGGER
         if is_real_signal:
@@ -216,4 +220,3 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         if "BUY" in signal_output:
             metric_col2.markdown(f"### <span style='color:#00C851'>{signal_output}</span>", unsafe_allow_html=True)
         elif "SHORT" in signal_output:
-            metric_col2.markdown(f"### <span style='color:#ff4444'>{signal_output}</span>", unsafe_allow_html=True)
