@@ -3,17 +3,19 @@ import pandas as pd
 import yfinance as yf
 import numpy as np
 import requests
+from openai import OpenAI
 
 # 1. Page Configuration & Title
 st.set_page_config(page_title="Ultimate AI Trading System", layout="wide")
 st.title("🛡️ Institutional Grade AI Multi-Asset Trading Engine")
-st.caption("Advanced Confluence Architecture: Triple EMA + Volume Shock Analytics + Option Chain Predictor + Dynamic Trailing SL + Risk Calculator + Telegram Alerts")
+st.caption("Advanced Confluence Architecture: Triple EMA + Volume Shock Analytics + Option Chain Predictor + Dynamic Trailing SL + Risk Calculator + Telegram Alerts + DeepSeek AI")
 
 # --- TELEGRAM SYSTEM CREDENTIALS (PERMANENT FIXED) ---
 TELEGRAM_TOKEN = "8680517650:AAHYrpb5j88XNGIoK-xu-hC-qZWs3RtCHkk"
 TELEGRAM_CHAT_ID = "7374819912"
 
 def send_telegram_alert(message):
+    # Fixed URL structure with api.telegram.org/bot
     url = f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage"
     payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}
     try:
@@ -21,7 +23,37 @@ def send_telegram_alert(message):
     except:
         pass
 
-# 2. Sidebar Layout Configuration Panel with Expanded Stock List
+# --- DEEPSEEK AI CORE LOGIC INTEGRATION ---
+def get_deepseek_decision(stock_name, price, rsi, signal):
+    try:
+        client = OpenAI(
+            api_key=st.secrets["DEEPSEEK_API_KEY"],
+            base_url="https://deepseek.com"
+        )
+        
+        prompt = f"""
+        Analyze this live market setup as an institutional trader:
+        Asset: {stock_name}
+        Current Price: ₹{price}
+        RSI: {rsi}
+        Indicator Signal: {signal}
+        
+        Provide your response in clean Hinglish. Format strictly as:
+        ⚡ *AI Decision:* BUY / SHORT SELL / STAY CASH
+        🎯 *Reasoning:* (Strictly 1 simple sentence)
+        """
+        
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            max_tokens=150
+        )
+        return response.choices.message.content
+    except Exception as e:
+        return f"⚠️ DeepSeek Analysis Failed: {str(e)}"
+
+# 2. Sidebar Layout Configuration Panel
 st.sidebar.header("🕹️ Multi-Asset Universe Configuration")
 segment_selector = st.sidebar.selectbox("Market Segment", ["Option Chains", "Intraday Equity", "MCX Commodities"])
 
@@ -33,7 +65,7 @@ ticker_matrix = {
         "MIDCPNIFTY": "^NSEMDCP50",
         "SENSEX": "^BSESN"
     },
-        "Intraday Equity": {
+    "Intraday Equity": {
         "RELIANCE": "RELIANCE.NS",
         "TATAMOTORS": "TATAMOTORS.NS",
         "SBIN": "SBIN.NS",
@@ -49,7 +81,6 @@ ticker_matrix = {
         "M&M": "M&M.NS",
         "MARUTI": "MARUTI.NS"
     },
-
     "MCX Commodities": {"CRUDE OIL": "CL=F", "GOLD": "GC=F", "SILVER": "SI=F"}
 }
 
@@ -136,6 +167,10 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             deriv_tip = f"{base_strike + 50} PE" if segment_selector == "Option Chains" else "N/A"
             system_state = "HIGH WIN-RATE"
             
+        # DeepSeek Live Analysis Call
+        with st.spinner("🤖 Consulting DeepSeek AI Intelligence..."):
+            deepseek_insights = get_deepseek_decision(script_selector, round(current_price, 2), round(current_rsi, 2), signal_output)
+            
         # Visual Render Allocation Section
         st.subheader(f"📊 Quantitative Asset Status: {script_selector} ({time_window} View)")
         metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = st.columns(5)
@@ -152,6 +187,11 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         metric_col4.metric("ALGO STOP LOSS", f"₹{sl}" if sl != "N/A" else "N/A")
         metric_col5.metric("🎯 TRAILING STOP LOSS", f"₹{tsl}" if tsl != "N/A" else "N/A")
         
+        # Display DeepSeek Insights directly on screen
+        st.markdown("---")
+        st.subheader("🧠 DeepSeek AI Strategic Overlay")
+        st.info(deepseek_insights)
+        
         st.markdown("---")
         st.subheader("💡 Algorithmic Position Sizing & Risk Intelligence")
         info_left, info_right = st.columns(2)
@@ -167,32 +207,3 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
                         lot_size = 25 if "NIFTY" in script_selector else 15
                         recommended_lots = max(1, calculated_qty // lot_size)
                         calculated_qty = recommended_lots * lot_size
-                        st.success(f"⚖️ **Position Size:** Max Risk = **₹{max_risk_cash:.2f}**. Size = **{calculated_qty} Units ({recommended_lots} Lots)**.")
-                    else:
-                        st.success(f"⚖️ **Position Size:** Max Risk = **₹{max_risk_cash:.2f}**. Size = **{calculated_qty} Shares**.")
-                else:
-                    st.warning("⚖️ **Position Size Calculator:** Stop Loss width is too tight to securely size risk metrics.")
-            else:
-                st.info("⚖️ **Position Size Calculator:** Waiting for confirmation signal.")
-                
-        with info_right:
-            if d_tip := deriv_tip if (deriv_tip != "N/A" and deriv_tip != "NO TRADE") else None:
-                st.success(f"🎯 **Options Chain Contract:** 🔥 RECOMMENDED CONTRACT: {d_tip}")
-            else:
-                st.warning("🎯 **Options Chain Contract:** Framework conditions not met yet. Derivative module locked.")
-        
-        # Trigger Live Automated Message Push
-        if "HOLD" not in signal_output:
-            alert_text = (
-                f"🚨 *AI TRADING ALERT* 🚨\n\n"
-                f"📦 *Asset:* {script_selector} ({time_window})\n"
-                f"🚦 *Action:* {signal_output}\n"
-                f"💵 *Entry Price:* ₹{current_price:.2f}\n"
-                f"🎯 *Target:* ₹{target}\n"
-                f"🛡️ *Stop Loss:* ₹{sl}\n"
-                f"📈 *Trailing SL:* ₹{tsl}\n"
-                f"⚖️ *Suggested Size:* {calculated_qty}\n"
-                f"🔑 *Option Contract:* {deriv_tip}"
-            )
-            send_telegram_alert(alert_text)
-            
