@@ -211,12 +211,12 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             send_telegram_alert(alert_msg)
             st.success("✅ Live Alert transmitted successfully to Telegram System Dashboard!")
 
-        # Visual Render Allocation Section
+        # --- FIXED MOBILE-FIRST VIEW RENDER (कॉलम हटा दिए ताकि मोबाइल पर क्रैश न हो) ---
         st.subheader(f"📊 Quantitative Asset Status: {script_selector} ({time_window} View)")
-        metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = st.columns(5)
         
-        metric_col1.metric("ENTRY TRIGGER PRICE", f"₹{current_price:,.2f}")
+        # मुख्य मेट्रिक्स को साफ़-साफ़ वर्टिकल लिस्ट में दिखाया
+        st.info(f"💰 **ENTRY TRIGGER PRICE:** ₹{current_price:,.2f}")
+        st.warning(f"🚦 **ENGINE SIGNAL STATUS:** {signal_output}")
         
-        # सरलीकृत सिग्नल डिस्प्ले (बिना किसी नेस्टेड इफ ब्लॉक के जो एरर करता था)
-        metric_col2.write(f"### {signal_output}")
-            
+        # टारगेट्स के लिए साफ टेबल स्ट्रक्चर
+        st.markdown("### 🎯 Order Matrix Target Points")
