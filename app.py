@@ -2,15 +2,28 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import numpy as np
+import requests
 
 # 1. Page Configuration & Setup
 st.set_page_config(page_title="Ultimate AI Trading System", layout="wide")
 st.title("🛡️ Institutional Grade AI Multi-Asset Trading Engine")
-st.caption("Advanced Confluence Architecture: Triple EMA + Volume Shock Analytics + Option Chain Predictor + Dynamic Trailing SL + Risk Calculator + Live Trade Log")
+st.caption("Advanced Confluence Architecture: Triple EMA + Volume Shock Analytics + Option Chain Predictor + Dynamic Trailing SL + Risk Calculator + Live Trade Log + Telegram Alerts")
 
 # 2. Safe Session State initialization for trade storage arrays
 if 'trade_log' not in st.session_state:
     st.session_state.trade_log = []
+
+# --- TELEGRAM SYSTEM LOGIC (PERMANENT LOCKED) ---
+TELEGRAM_TOKEN = "8680517650:AAHYrpb5j88XNGIoK-xu-hC-qZWs3RtCHkk"
+TELEGRAM_CHAT_ID = "7374819912"
+
+def send_telegram_alert(message):
+    url = f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage"
+    payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}
+    try:
+        requests.post(url, json=payload, timeout=10)
+    except Exception as e:
+        pass
 
 # 3. Dropdown Configuration Panel UI
 st.sidebar.header("🕹️ Multi-Asset Universe Configuration")
@@ -41,7 +54,6 @@ risk_percentage = st.sidebar.slider("Max Risk Per Trade (%)", min_value=0.5, max
 if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
     st.write("### 📊 Market Scan Results")
     
-    # Live Data Stream Fetch using yfinance terminal feeds
     market_data = yf.download(tickers=ticker_symbol, period="5d", interval=time_window)
     
     if market_data.empty:
@@ -86,7 +98,6 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         else:
             base_strike = round(current_price / 50) * 50
             
-        # Linear Level Allocation Logic Sequence (Zero Nesting Mode)
         signal_output = "⏳ ALGO SHIELD ACTIVE (STAY CASH / HOLD)"
         sl = "N/A"
         target = "N/A"
@@ -155,33 +166,25 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
                 st.success(f"🎯 **Options Chain Contract:** 🔥 RECOMMENDED CONTRACT: {d_tip}")
             else:
                 st.warning("🎯 **Options Chain Contract:** Framework conditions not met yet. Derivative module locked.")
-                
+        
+        # Trigger Auto Telegram Message on Action Signals
+        if "HOLD" not in signal_output:
+            alert_text = (
+                f"🚨 *AI TRADING ALERT* 🚨\n\n"
+                f"📦 *Asset:* {script_selector} ({time_window})\n"
+                f"🚦 *Action:* {signal_output}\n"
+                f"💵 *Entry Price:* ₹{current_price:.2f}\n"
+                f"🎯 *Target:* ₹{target}\n"
+                f"🛡️ *Stop Loss:* ₹{sl}\n"
+                f"📈 *Trailing SL:* ₹{tsl}\n"
+                f"⚖️ *Suggested Size:* {calculated_qty}\n"
+                f"🔑 *Option Contract:* {deriv_tip}"
+            )
+            send_telegram_alert(alert_text)
+
         if "HOLD" not in signal_output and calculated_qty > 0:
             st.markdown("---")
             st.subheader("📝 Live Trade Simulator Recorder")
             if st.button("📥 Log Current Signal to History Dashboard"):
                 new_trade = {
                     "Asset": script_selector,
-                    "Type": "BUY" if "BUY" in signal_output else "SHORT SELL",
-                    "Entry Price": current_price,
-                    "Target": target,
-                    "Stop Loss": sl,
-                    "Qty Allocated": calculated_qty
-                }
-                st.session_state.trade_log.append(new_trade)
-                st.success(f"Successfully recorded simulated trade for {script_selector}!")
-                
-        st.subheader("📉 Real-Time Structural Waveform")
-        st.line_chart(market_data[['Close']])
-
-# Display Panel for Global Trade Logs Records
-st.markdown("---")
-st.subheader("📜 Recorded Live Simulated Trade Logs")
-if st.session_state.trade_log:
-    log_df = pd.DataFrame(st.session_state.trade_log)
-    st.dataframe(log_df, use_container_width=True)
-    if st.button("🗑️ Clear History Log"):
-        st.session_state.trade_log = []
-        st.rerun()
-else:
-    st.info("No trades recorded in this active operational dashboard session yet.")
