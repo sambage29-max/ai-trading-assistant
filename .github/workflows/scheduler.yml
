@@ -1,0 +1,26 @@
+name: Continuous Market Auto Scanner
+
+on:
+  schedule:
+    # Runs every 15 minutes from Monday to Friday (Market Hours: ~03:45 UTC to ~10:00 UTC)
+    - cron: '*/15 3-10 * * 1-5'
+  workflow_dispatch: # Allows manual background trigger from GitHub UI
+
+jobs:
+  run-algo-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Python Environment
+        uses: actions/tools/python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install System Dependencies
+        run: |
+          pip install pandas yfinance numpy requests
+
+      - name: Execute Automated Mathematical Core Scan
+        run: python cron_scan.py
