@@ -207,3 +207,4 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
                         lot_size = 25 if "NIFTY" in script_selector else 15
                         recommended_lots = max(1, calculated_qty // lot_size)
                         calculated_qty = recommended_lots * lot_size
+
