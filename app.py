@@ -15,7 +15,6 @@ TELEGRAM_TOKEN = "8680517650:AAHYrpb5j88XNGIoK-xu-hC-qZWs3RtCHkk"
 TELEGRAM_CHAT_ID = "7374819912"
 
 def send_telegram_alert(message):
-    # API डिलीवरी के लिए सही बेस URL रूट
     url = f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage"
     payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}
     try:
@@ -139,7 +138,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         atr_band = float(last_node['ATR']) if float(last_node['ATR']) > 0 else (raw_price * 0.004)
         volume_shock = float(last_node['Volume']) > (1.3 * float(market_data['Vol_Baseline'].iloc[-1]))
         
-        # MCX करेंसी कन्वर्जन लॉजिक
+        # MCX Currency Conversion Logic
         if segment_selector == "MCX Commodities":
             usd_inr_rate = 84.10  
             current_price = raw_price * usd_inr_rate
@@ -193,8 +192,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         with st.spinner("🤖 Consulting DeepSeek AI Intelligence Overlay..."):
             deepseek_insights = get_deepseek_decision(script_selector, round(current_price, 2), round(current_rsi, 2), signal_output)
             
-        # --- FIXED: TELEGRAM LIVE ALERTS LOGIC TRIGGER ---
-        # केवल तभी मैसेज भेजेगा जब शील्ड हटेगी और वास्तविक सिग्नल जेनरेट होगा
+        # TELEGRAM LIVE ALERTS LOGIC TRIGGER
         if is_real_signal:
             alert_msg = (
                 f"🚨 *ALGO TRADING ENGINE SIGNAL ALERT*\n\n"
@@ -218,3 +216,5 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         if "BUY" in signal_output:
             metric_col2.markdown(f"### <span style='color:#00C851'>{signal_output}</span>", unsafe_allow_html=True)
         elif "SHORT" in signal_output:
+            metric_col2.markdown(f"### <span style='color:#ff4444'>{signal_output}</span>", unsafe_allow_html=True)
+        else:
