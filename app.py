@@ -21,7 +21,7 @@ def send_telegram_alert(message):
     except:
         pass
 
-# 2. Sidebar Layout Configuration Panel
+# 2. Sidebar Layout Configuration Panel with Expanded Stock List
 st.sidebar.header("🕹️ Multi-Asset Universe Configuration")
 segment_selector = st.sidebar.selectbox("Market Segment", ["Option Chains", "Intraday Equity", "MCX Commodities"])
 
@@ -49,10 +49,6 @@ ticker_matrix = {
         "M&M": "M&M.NS",
         "MARUTI": "MARUTI.NS"
     },
-    "MCX Commodities": {"CRUDE OIL": "CL=F", "GOLD": "GC=F", "SILVER": "SI=F"}
-}
-
-    "Intraday Equity": {"RELIANCE": "RELIANCE.NS", "TATA MOTORS": "TATAMOTORS.NS", "SBI": "SBIN.NS"},
     "MCX Commodities": {"CRUDE OIL": "CL=F", "GOLD": "GC=F", "SILVER": "SI=F"}
 }
 
@@ -199,7 +195,3 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             )
             send_telegram_alert(alert_text)
             
-        st.subheader("📉 Real-Time Structural Waveform")
-        st.line_chart(market_data[['Close']])
-else:
-    st.warning("👈 Open the sidebar navigation menu using top-left '>>' layout toggle and click 'Run Advanced Institutional Scan'.")
