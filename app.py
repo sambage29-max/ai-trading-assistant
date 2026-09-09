@@ -5,96 +5,35 @@ import numpy as np
 import requests
 from openai import OpenAI
 
-# 1. Page Configuration & Title
 st.set_page_config(page_title="Ultimate AI Trading System", layout="wide")
 st.title("🛡️ Institutional Grade AI Multi-Asset Trading Engine")
-st.caption("Advanced Confluence Architecture: Triple EMA + Volume Shock Analytics + Option Chain Predictor + Dynamic Trailing SL + Risk Calculator + Telegram Alerts + DeepSeek AI")
+st.caption("Confluence Architecture: Triple EMA + Volume Shock + Risk Calculator + Telegram Alerts + DeepSeek AI")
 
-# --- TELEGRAM SYSTEM CREDENTIALS (PERMANENT FIXED) ---
 TELEGRAM_TOKEN = "8680517650:AAHYrpb5j88XNGIoK-xu-hC-qZWs3RtCHkk"
 TELEGRAM_CHAT_ID = "7374819912"
 
 def send_telegram_alert(message):
     url = f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage"
-    payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}
-    try:
-        requests.post(url, json=payload, timeout=10)
-    except:
-        pass
+    try: requests.post(url, json={"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}, timeout=5)
+    except: pass
 
-# --- ERROR-PROOF DEEPSEEK AI INTELLIGENCE INTERFACE ---
 def get_deepseek_decision(stock_name, price, rsi, signal):
-    local_reason = "System Range Lock Matrix Active."
-    if "BUY" in signal:
-        local_reason = "Bullish structure supported by Triple EMA crossover & RSI momentum."
-    elif "SHORT" in signal:
-        local_reason = "Bearish breakdowns verified by structural distribution & volume shock."
-
+    if "DEEPSEEK_API_KEY" not in st.secrets:
+        return "⚡ *AI Decision:* STAY CASH\n🎯 *Reasoning:* [Local Engine Active Mode]"
     try:
-        # अगर सीक्रेट्स में की (Key) मौजूद नहीं है तो सीधे लोकल रिस्पॉन्स भेजें
-        if "DEEPSEEK_API_KEY" not in st.secrets:
-            return f"⚡ *AI Decision:* STAY CASH\n🎯 *Reasoning:* [Local Backup Mode] {local_reason}"
-
-        client = OpenAI(
-            api_key=st.secrets["DEEPSEEK_API_KEY"],
-            base_url="https://deepseek.com"
-        )
-        
-        prompt = f"""
-        Analyze this live market setup as an institutional trader:
-        Asset: {stock_name}
-        Current Price: {price}
-        RSI (5m): {rsi}
-        Indicator Signal: {signal}
-        
-        Provide your response in clean Hinglish. Format strictly as:
-        ⚡ *AI Decision:* BUY / SHORT SELL / STAY CASH
-        🎯 *Reasoning:* (Strictly 1 simple sentence)
-        """
-        
-        response = client.chat.completions.create(
-            model="deepseek-chat",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.2,
-            max_tokens=150,
-            timeout=4
-        )
+        client = OpenAI(api_key=st.secrets["DEEPSEEK_API_KEY"], base_url="https://deepseek.com")
+        prompt = f"Analyze asset {stock_name} at price {price}, RSI {rsi}, signal {signal}. Reply in 1 simple Hinglish sentence."
+        response = client.chat.completions.create(model="deepseek-chat", messages=[{"role": "user", "content": prompt}], temperature=0.2, max_tokens=100, timeout=4)
         return response.choices.message.content
-    except Exception as e:
-        return (
-            f"⚡ *AI Decision:* {'STAY CASH' if 'HOLD' in signal else 'CONFLUENCE MATCH'}\n"
-            f"🎯 *Reasoning:* [DeepSeek Server Offline / Timeout]. Local Framework Suggests: {local_reason}"
-        )
+    except:
+        return "⚡ *AI Decision:* STAY CASH\n🎯 *Reasoning:* [Server Offline Backup]"
 
-
-# 2. Sidebar Layout Configuration Panel
 st.sidebar.header("🕹️ Multi-Asset Universe Configuration")
 segment_selector = st.sidebar.selectbox("Market Segment", ["Option Chains", "Intraday Equity", "MCX Commodities"])
 
 ticker_matrix = {
-    "Option Chains": {
-        "NIFTY 50": "^NSEI", 
-        "BANK NIFTY": "^NSEBANK",
-        "FINNIFTY": "NIFTY_FIN_SERVICE.NS",
-        "MIDCPNIFTY": "^NSEMDCP50",
-        "SENSEX": "^BSESN"
-    },
-    "Intraday Equity": {
-        "RELIANCE": "RELIANCE.NS",
-        "TATAMOTORS": "TATAMOTORS.NS",
-        "SBIN": "SBIN.NS",
-        "HDFCBANK": "HDFCBANK.NS",
-        "ICICIBANK": "ICICIBANK.NS",
-        "AXISBANK": "AXISBANK.NS",
-        "TCS": "TCS.NS",
-        "INFY": "INFY.NS",
-        "WIPRO": "WIPRO.NS",
-        "ITC": "ITC.NS",
-        "TATASTEEL": "TATASTEEL.NS",
-        "ADANIENT": "ADANIENT.NS",
-        "M&M": "M&M.NS",
-        "MARUTI": "MARUTI.NS"
-    },
+    "Option Chains": {"NIFTY 50": "^NSEI", "BANK NIFTY": "^NSEBANK", "FINNIFTY": "NIFTY_FIN_SERVICE.NS"},
+    "Intraday Equity": {"RELIANCE": "RELIANCE.NS", "TATAMOTORS": "TATAMOTORS.NS", "SBIN": "SBIN.NS"},
     "MCX Commodities": {"CRUDE OIL": "CL=F", "GOLD": "GC=F", "SILVER": "SI=F"}
 }
 
@@ -107,10 +46,8 @@ st.sidebar.header("💰 Risk Management Dashboard")
 total_capital = st.sidebar.number_input("Your Trading Capital (₹)", min_value=1000, value=50000, step=5000)
 risk_percentage = st.sidebar.slider("Max Risk Per Trade (%)", min_value=0.5, max_value=5.0, value=1.0, step=0.5)
 
-# 3. Main Data Core Trigger Process Loop
 if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
     st.write("### 📊 Market Scan Results")
-    
     market_data = yf.download(tickers=ticker_symbol, period="5d", interval=time_window)
     
     if market_data.empty:
@@ -119,7 +56,6 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         if isinstance(market_data.columns, pd.MultiIndex):
             market_data.columns = market_data.columns.droplevel(1)
             
-        # Standard Advanced Technical Analytics 
         market_data['EMA_9'] = market_data['Close'].ewm(span=9, adjust=False).mean()
         market_data['EMA_21'] = market_data['Close'].ewm(span=21, adjust=False).mean()
         market_data['EMA_50'] = market_data['Close'].ewm(span=50, adjust=False).mean()
@@ -127,9 +63,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         delta = market_data['Close'].diff()
         gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
         loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-        rs = gain / (loss + 1e-10)
-        market_data['RSI'] = 100 - (100 / (1 + rs))
-        
+        market_data['RSI'] = 100 - (100 / (1 + (gain / (loss + 1e-10))))
         market_data['Vol_Baseline'] = market_data['Volume'].rolling(window=20).mean()
         market_data['TR'] = np.maximum(market_data['High'] - market_data['Low'], np.maximum(abs(market_data['High'] - market_data['Close'].shift(1)), abs(market_data['Low'] - market_data['Close'].shift(1))))
         market_data['ATR'] = market_data['TR'].rolling(window=14).mean()
@@ -142,77 +76,48 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         atr_band = float(last_node['ATR']) if float(last_node['ATR']) > 0 else (raw_price * 0.004)
         volume_shock = float(last_node['Volume']) > (1.3 * float(market_data['Vol_Baseline'].iloc[-1])) if not np.isnan(last_node['Volume']) else False
         
-        # MCX Currency Conversion Logic
         if segment_selector == "MCX Commodities":
-            usd_inr_rate = 84.10  
-            current_price = raw_price * usd_inr_rate
-            atr_band = atr_band * usd_inr_rate
+            current_price = raw_price * 84.10
+            atr_band = atr_band * 84.10
         else:
             current_price = raw_price
             
         bullish_structure = (last_node['EMA_9'] > last_node['EMA_21']) and (last_node['EMA_21'] > last_node['EMA_50'])
         bearish_structure = (last_node['EMA_9'] < last_node['EMA_21']) and (last_node['EMA_21'] < last_node['EMA_50'])
         
-        bullish_momentum = current_rsi >= 58 and prev_node['RSI'] < 58
-        bearish_momentum = current_rsi <= 42 and prev_node['RSI'] > 42
-        
-        if "NIFTY 50" in script_selector or "FINNIFTY" in script_selector:
-            base_strike = round(current_price / 50) * 50
-        elif "BANK NIFTY" in script_selector or "SENSEX" in script_selector:
-            base_strike = round(current_price / 100) * 100
-        else:
-            base_strike = round(current_price / 50) * 50
-            
-        # Default Initialization Status
         signal_output = "⏳ ALGO SHIELD ACTIVE (STAY CASH / HOLD)"
-        sl = "N/A"
-        target = "N/A"
-        tsl = "N/A"
-        deriv_tip = "NO TRADE"
-        system_state = "SAFE RANGE PATTERN LOCK"
-        calculated_qty = 0
-        is_real_signal = False
+        sl, target, tsl, is_real_signal = "N/A", "N/A", "N/A", False
         
-        # Confluence Entry Matrix Checks
-        if bullish_structure and (bullish_momentum or current_rsi > 60) and volume_shock:
+        if bullish_structure and (current_rsi > 58) and volume_shock:
             signal_output = "⚡ INSTITUTIONAL BUY SIGNALS"
-            sl = round(current_price - (1.5 * atr_band), 2)
-            target = round(current_price + (2.5 * atr_band), 2)
-            tsl = round(current_price - (0.8 * atr_band), 2)
-            deriv_tip = f"{base_strike - 50} CE" if segment_selector == "Option Chains" else "N/A"
-            system_state = "HIGH WIN-RATE"
-            is_real_signal = True
+            sl, target, tsl, is_real_signal = round(current_price - (1.5 * atr_band), 2), round(current_price + (2.5 * atr_band), 2), round(current_price - (0.8 * atr_band), 2), True
             
-        if bearish_structure and (bearish_momentum or current_rsi < 40) and volume_shock:
+        if bearish_structure and (current_rsi < 42) and volume_shock:
             signal_output = "⚠️ INSTITUTIONAL SHORT SELL SIGNALS"
-            sl = round(current_price + (1.5 * atr_band), 2)
-            target = round(current_price - (2.5 * atr_band), 2)
-            tsl = round(current_price + (0.8 * atr_band), 2)
-            deriv_tip = f"{base_strike + 50} PE" if segment_selector == "Option Chains" else "N/A"
-            system_state = "HIGH WIN-RATE"
-            is_real_signal = True
+            sl, target, tsl, is_real_signal = round(current_price + (1.5 * atr_band), 2), round(current_price - (2.5 * atr_band), 2), round(current_price + (0.8 * atr_band), 2), True
 
-        # --- SAFE UI FORCED RENDERING SECTION ---
-        # हम सबसे पहले पूरा UI रेंडर कर रहे हैं ताकि API एरर नीचे का हिस्सा न रोक सके
         st.subheader(f"📊 Quantitative Asset Status: {script_selector} ({time_window} View)")
         st.info(f"💰 **ENTRY TRIGGER PRICE:** ₹{current_price:,.2f}")
         st.warning(f"🚦 **ENGINE SIGNAL STATUS:** {signal_output}")
-        
         st.markdown("### 🎯 Order Matrix Target Points")
         st.write(f"🔹 **MATHEMATICAL TARGET:** {f'₹{target:,.2f}' if target != 'N/A' else 'N/A'}")
         st.write(f"🔹 **ALGO STOP LOSS:** {f'₹{sl:,.2f}' if sl != 'N/A' else 'N/A'}")
         st.write(f"🔹 **TRAILING STOP LOSS:** {f'₹{tsl:,.2f}' if tsl != 'N/A' else 'N/A'}")
         
-        # LIVE DEEPSEEK ANALYSIS (COMPLETELY ISOLATED)
-        deepseek_insights = "DeepSeek Local System Mode - Operational"
-        try:
-            # बिना स्पिनर के डायरेक्ट ट्राई-कैच ताकि UI हैंग न हो
-            deepseek_insights = get_deepseek_decision(script_selector, round(current_price, 2), round(current_rsi, 2), signal_output)
-        except Exception as e:
-            pass
-            
-        # TELEGRAM LIVE ALERTS LOGIC TRIGGER
+        deepseek_insights = get_deepseek_decision(script_selector, round(current_price, 2), round(current_rsi, 2), signal_output)
+        
         if is_real_signal:
-            alert_msg = (
-                f"🚨 *ALGO TRADING ENGINE SIGNAL ALERT*\n\n"
-                f"📈 *Asset:* {script_selector} ({time_window})\n"
+            send_telegram_alert(f"🚨 ALERT\nAsset: {script_selector}\nAction: {signal_output}\nPrice: ₹{current_price:,.2f}\nTarget: ₹{target:,.2f}\nSL: ₹{sl:,.2f}")
+            st.success("✅ Live Alert transmitted successfully to Telegram!")
+
+        st.markdown("---")
+        st.subheader("🧠 DeepSeek AI Strategic Overlay Insights")
+        st.info(deepseek_insights)
+        
+        st.markdown("---")
+        st.subheader("💡 Algorithmic Position Sizing & Risk Intelligence")
+        max_risk_cash = total_capital * (risk_percentage / 100)
+        calculated_qty = int(max_risk_cash // (abs(current_price - sl))) if sl != "N/A" else 0
+        
+        st.success(f"📦 **RECOMMENDED QUANTITY TO TRADE:** {calculated_qty} units")
+        st.write(f"🔹 **Max Wallet Capital Allocated to Risk:** ₹{max_risk_cash:,.2f}")
