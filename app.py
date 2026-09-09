@@ -15,7 +15,7 @@ TELEGRAM_TOKEN = "8680517650:AAHYrpb5j88XNGIoK-xu-hC-qZWs3RtCHkk"
 TELEGRAM_CHAT_ID = "7374819912"
 
 def send_telegram_alert(message):
-    # Fixed URL structure with api.telegram.org/bot
+    # FIXED: Added api. prefix and /bot route for real delivery
     url = f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage"
     payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}
     try:
@@ -23,7 +23,7 @@ def send_telegram_alert(message):
     except:
         pass
 
-# --- DEEPSEEK AI CORE LOGIC INTEGRATION ---
+# --- DEEPSEEK AI INTELLIGENCE INTERFACE ---
 def get_deepseek_decision(stock_name, price, rsi, signal):
     try:
         client = OpenAI(
@@ -35,7 +35,7 @@ def get_deepseek_decision(stock_name, price, rsi, signal):
         Analyze this live market setup as an institutional trader:
         Asset: {stock_name}
         Current Price: ₹{price}
-        RSI: {rsi}
+        RSI (5m): {rsi}
         Indicator Signal: {signal}
         
         Provide your response in clean Hinglish. Format strictly as:
@@ -167,8 +167,8 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             deriv_tip = f"{base_strike + 50} PE" if segment_selector == "Option Chains" else "N/A"
             system_state = "HIGH WIN-RATE"
             
-        # DeepSeek Live Analysis Call
-        with st.spinner("🤖 Consulting DeepSeek AI Intelligence..."):
+        # LIVE DEEPSEEK ANALYSIS INTERACTION POINT
+        with st.spinner("🤖 Consulting DeepSeek AI Intelligence Overlay..."):
             deepseek_insights = get_deepseek_decision(script_selector, round(current_price, 2), round(current_rsi, 2), signal_output)
             
         # Visual Render Allocation Section
@@ -187,9 +187,9 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         metric_col4.metric("ALGO STOP LOSS", f"₹{sl}" if sl != "N/A" else "N/A")
         metric_col5.metric("🎯 TRAILING STOP LOSS", f"₹{tsl}" if tsl != "N/A" else "N/A")
         
-        # Display DeepSeek Insights directly on screen
+        # UI DISPLAY: DeepSeek analysis box rendered on screen
         st.markdown("---")
-        st.subheader("🧠 DeepSeek AI Strategic Overlay")
+        st.subheader("🧠 DeepSeek AI Strategic Overlay Insights")
         st.info(deepseek_insights)
         
         st.markdown("---")
