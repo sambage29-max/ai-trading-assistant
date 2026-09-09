@@ -15,7 +15,7 @@ TELEGRAM_TOKEN = "8680517650:AAHYrpb5j88XNGIoK-xu-hC-qZWs3RtCHkk"
 TELEGRAM_CHAT_ID = "7374819912"
 
 def send_telegram_alert(message):
-    # FIXED: Added api. prefix and /bot route for real delivery
+    # API डिलीवरी के लिए सही बेस URL रूट
     url = f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage"
     payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}
     try:
@@ -139,10 +139,9 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         atr_band = float(last_node['ATR']) if float(last_node['ATR']) > 0 else (raw_price * 0.004)
         volume_shock = float(last_node['Volume']) > (1.3 * float(market_data['Vol_Baseline'].iloc[-1]))
         
-        # --- FIXED: BUG FIX FOR MCX CURRENCY SYMBOL MATCHING ---
-        # अगर यूजर MCX सेलेक्ट करता है, तो डॉलर डेटा को रुपये में बदलो, नहीं तो सामान्य रखो
+        # MCX करेंसी कन्वर्जन लॉजिक
         if segment_selector == "MCX Commodities":
-            usd_inr_rate = 84.10  # लाइव USD/INR एक्सचेंज रेट मल्टीप्लायर
+            usd_inr_rate = 84.10  
             current_price = raw_price * usd_inr_rate
             atr_band = atr_band * usd_inr_rate
         else:
@@ -169,6 +168,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         deriv_tip = "NO TRADE"
         system_state = "SAFE RANGE PATTERN LOCK"
         calculated_qty = 0
+        is_real_signal = False
         
         # Confluence Entry Matrix Checks
         if bullish_structure and (bullish_momentum or current_rsi > 60) and volume_shock:
@@ -178,6 +178,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             tsl = round(current_price - (0.8 * atr_band), 2)
             deriv_tip = f"{base_strike - 50} CE" if segment_selector == "Option Chains" else "N/A"
             system_state = "HIGH WIN-RATE"
+            is_real_signal = True
             
         if bearish_structure and (bearish_momentum or current_rsi < 40) and volume_shock:
             signal_output = "⚠️ INSTITUTIONAL SHORT SELL SIGNALS"
@@ -186,29 +187,34 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             tsl = round(current_price + (0.8 * atr_band), 2)
             deriv_tip = f"{base_strike + 50} PE" if segment_selector == "Option Chains" else "N/A"
             system_state = "HIGH WIN-RATE"
+            is_real_signal = True
             
         # LIVE DEEPSEEK ANALYSIS INTERACTION POINT
         with st.spinner("🤖 Consulting DeepSeek AI Intelligence Overlay..."):
             deepseek_insights = get_deepseek_decision(script_selector, round(current_price, 2), round(current_rsi, 2), signal_output)
             
+        # --- FIXED: TELEGRAM LIVE ALERTS LOGIC TRIGGER ---
+        # केवल तभी मैसेज भेजेगा जब शील्ड हटेगी और वास्तविक सिग्नल जेनरेट होगा
+        if is_real_signal:
+            alert_msg = (
+                f"🚨 *ALGO TRADING ENGINE SIGNAL ALERT*\n\n"
+                f"📈 *Asset:* {script_selector} ({time_window})\n"
+                f"🚦 *Action:* {signal_output}\n"
+                f"💰 *Entry Price:* ₹{current_price:,.2f}\n"
+                f"🎯 *Target:* ₹{target:,.2f}\n"
+                f"🛑 *Stop Loss:* ₹{sl:,.2f}\n"
+                f"📦 *Suggested Option:* {deriv_tip}\n\n"
+                f"🤖 *AI Insights:* {deepseek_insights}"
+            )
+            send_telegram_alert(alert_msg)
+            st.success("✅ Live Alert transmitted successfully to Telegram System Dashboard!")
+
         # Visual Render Allocation Section
         st.subheader(f"📊 Quantitative Asset Status: {script_selector} ({time_window} View)")
         metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = st.columns(5)
         
-        # FIXED: डिस्प्ले फ़ॉर्मेटिंग हमेशा सही सिंबल दिखाएगी
         metric_col1.metric("ENTRY TRIGGER PRICE", f"₹{current_price:,.2f}")
         
         if "BUY" in signal_output:
             metric_col2.markdown(f"### <span style='color:#00C851'>{signal_output}</span>", unsafe_allow_html=True)
         elif "SHORT" in signal_output:
-            metric_col2.markdown(f"### <span style='color:#ff4444'>{signal_output}</span>", unsafe_allow_html=True)
-        else:
-            metric_col2.markdown(f"### <span style='color:#a6a6a6'>{signal_output}</span>", unsafe_allow_html=True)
-            
-        metric_col3.metric("MATHEMATICAL TARGET", f"₹{target:,.2f}" if target != "N/A" else "N/A")
-        metric_col4.metric("ALGO STOP LOSS", f"₹{sl:,.2f}" if sl != "N/A" else "N/A")
-        metric_col5.metric("🎯 TRAILING STOP LOSS", f"₹{tsl:,.2f}" if tsl != "N/A" else "N/A")
-        
-        # UI DISPLAY: DeepSeek analysis box rendered on screen
-        st.markdown("---")
-        st.subheader("🧠 DeepSeek AI Strategic Overlay Insights")
