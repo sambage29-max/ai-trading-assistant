@@ -31,6 +31,10 @@ def get_deepseek_decision(stock_name, price, rsi, signal):
         local_reason = "Bearish breakdowns verified by structural distribution & volume shock."
 
     try:
+        # अगर सीक्रेट्स में की (Key) मौजूद नहीं है तो सीधे लोकल रिस्पॉन्स भेजें
+        if "DEEPSEEK_API_KEY" not in st.secrets:
+            return f"⚡ *AI Decision:* STAY CASH\n🎯 *Reasoning:* [Local Backup Mode] {local_reason}"
+
         client = OpenAI(
             api_key=st.secrets["DEEPSEEK_API_KEY"],
             base_url="https://deepseek.com"
@@ -53,13 +57,13 @@ def get_deepseek_decision(stock_name, price, rsi, signal):
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2,
             max_tokens=150,
-            timeout=5
+            timeout=4
         )
         return response.choices.message.content
     except Exception as e:
         return (
             f"⚡ *AI Decision:* {'STAY CASH' if 'HOLD' in signal else 'CONFLUENCE MATCH'}\n"
-            f"🎯 *Reasoning:* [DeepSeek Server 403 Traffic Bypass Mode]. Local Framework Suggests: {local_reason}"
+            f"🎯 *Reasoning:* [DeepSeek Server Offline / Timeout]. Local Framework Suggests: {local_reason}"
         )
 
 
@@ -134,9 +138,9 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         prev_node = market_data.iloc[-2]
         
         raw_price = float(last_node['Close'])
-        current_rsi = float(last_node['RSI'])
+        current_rsi = float(last_node['RSI']) if not np.isnan(last_node['RSI']) else 50.0
         atr_band = float(last_node['ATR']) if float(last_node['ATR']) > 0 else (raw_price * 0.004)
-        volume_shock = float(last_node['Volume']) > (1.3 * float(market_data['Vol_Baseline'].iloc[-1]))
+        volume_shock = float(last_node['Volume']) > (1.3 * float(market_data['Vol_Baseline'].iloc[-1])) if not np.isnan(last_node['Volume']) else False
         
         # MCX Currency Conversion Logic
         if segment_selector == "MCX Commodities":
@@ -187,13 +191,24 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             deriv_tip = f"{base_strike + 50} PE" if segment_selector == "Option Chains" else "N/A"
             system_state = "HIGH WIN-RATE"
             is_real_signal = True
-            
-        # LIVE DEEPSEEK ANALYSIS INTERACTION POINT
-        deepseek_insights = "DeepSeek API Pending Connection / Offline Mode"
+
+        # --- SAFE UI FORCED RENDERING SECTION ---
+        # हम सबसे पहले पूरा UI रेंडर कर रहे हैं ताकि API एरर नीचे का हिस्सा न रोक सके
+        st.subheader(f"📊 Quantitative Asset Status: {script_selector} ({time_window} View)")
+        st.info(f"💰 **ENTRY TRIGGER PRICE:** ₹{current_price:,.2f}")
+        st.warning(f"🚦 **ENGINE SIGNAL STATUS:** {signal_output}")
+        
+        st.markdown("### 🎯 Order Matrix Target Points")
+        st.write(f"🔹 **MATHEMATICAL TARGET:** {f'₹{target:,.2f}' if target != 'N/A' else 'N/A'}")
+        st.write(f"🔹 **ALGO STOP LOSS:** {f'₹{sl:,.2f}' if sl != 'N/A' else 'N/A'}")
+        st.write(f"🔹 **TRAILING STOP LOSS:** {f'₹{tsl:,.2f}' if tsl != 'N/A' else 'N/A'}")
+        
+        # LIVE DEEPSEEK ANALYSIS (COMPLETELY ISOLATED)
+        deepseek_insights = "DeepSeek Local System Mode - Operational"
         try:
-            with st.spinner("🤖 Consulting DeepSeek AI Intelligence Overlay..."):
-                deepseek_insights = get_deepseek_decision(script_selector, round(current_price, 2), round(current_rsi, 2), signal_output)
-        except:
+            # बिना स्पिनर के डायरेक्ट ट्राई-कैच ताकि UI हैंग न हो
+            deepseek_insights = get_deepseek_decision(script_selector, round(current_price, 2), round(current_rsi, 2), signal_output)
+        except Exception as e:
             pass
             
         # TELEGRAM LIVE ALERTS LOGIC TRIGGER
@@ -201,22 +216,3 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             alert_msg = (
                 f"🚨 *ALGO TRADING ENGINE SIGNAL ALERT*\n\n"
                 f"📈 *Asset:* {script_selector} ({time_window})\n"
-                f"🚦 *Action:* {signal_output}\n"
-                f"💰 *Entry Price:* ₹{current_price:,.2f}\n"
-                f"🎯 *Target:* ₹{target:,.2f}\n"
-                f"🛑 *Stop Loss:* ₹{sl:,.2f}\n"
-                f"📦 *Suggested Option:* {deriv_tip}\n\n"
-                f"🤖 *AI Insights:* {deepseek_insights}"
-            )
-            send_telegram_alert(alert_msg)
-            st.success("✅ Live Alert transmitted successfully to Telegram System Dashboard!")
-
-        # --- FIXED MOBILE-FIRST VIEW RENDER (कॉलम हटा दिए ताकि मोबाइल पर क्रैश न हो) ---
-        st.subheader(f"📊 Quantitative Asset Status: {script_selector} ({time_window} View)")
-        
-        # मुख्य मेट्रिक्स को साफ़-साफ़ वर्टिकल लिस्ट में दिखाया
-        st.info(f"💰 **ENTRY TRIGGER PRICE:** ₹{current_price:,.2f}")
-        st.warning(f"🚦 **ENGINE SIGNAL STATUS:** {signal_output}")
-        
-        # टारगेट्स के लिए साफ टेबल स्ट्रक्चर
-        st.markdown("### 🎯 Order Matrix Target Points")
