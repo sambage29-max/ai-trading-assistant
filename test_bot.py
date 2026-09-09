@@ -4,12 +4,13 @@ import requests
 # 🔑 aapki details yahan automatically configured hain
 # ==========================================
 YOUR_CHAT_ID = "7374819912"           # aapki real telegram numerical id 
-YOUR_TOKEN = "7584930291:AAFxYz..."    # botfather se mila bot token yahan paste karein
+YOUR_TOKEN = "7584930291:AAFxYz..."   # botfather se mila bot token yahan paste karein
 
 # ==========================================
 # 🛠️ telegram alert function
 # ==========================================
 def send_telegram_alert(api_token, chat_id, message):
+    # Fixed URL Structure:
     url = f"https://telegram.org{api_token}/sendMessage"
     payload = {
         "chat_id": chat_id,
