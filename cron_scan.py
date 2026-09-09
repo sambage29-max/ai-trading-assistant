@@ -14,7 +14,6 @@ def send_telegram_alert(message):
     except:
         pass
 
-# Complete Tracking Universe Portfolio Matrix
 ticker_universe = {
     "NIFTY 50": "^NSEI", 
     "BANK NIFTY": "^NSEBANK",
@@ -50,21 +49,20 @@ for asset_name, ticker_symbol in ticker_universe.items():
         df['TR'] = np.maximum(df['High'] - df['Low'], np.maximum(abs(df['High'] - df['Close'].shift(1)), abs(df['Low'] - df['Close'].shift(1))))
         df['ATR'] = df['TR'].rolling(window=14).mean()
         
-        last = df.iloc[-1]
-        prev = df.iloc[-2]
+        last_node = df.iloc[-1]
+        prev_node = df.iloc[-2]
         
-        current_price = float(last['Close'])
-        current_rsi = float(last['RSI'])
-        atr_band = float(last['ATR']) if float(last['ATR']) > 0 else (current_price * 0.004)
-        volume_shock = float(last['Volume']) > (1.3 * float(df['Vol_Baseline'].iloc[-1]))
+        current_price = float(last_node['Close'])
+        current_rsi = float(last_node['RSI'])
+        atr_band = float(last_node['ATR']) if float(last_node['ATR']) > 0 else (current_price * 0.004)
+        volume_shock = float(last_node['Volume']) > (1.3 * float(df['Vol_Baseline'].iloc[-1]))
         
-        bullish_structure = (last['EMA_9'] > last['EMA_21']) and (last_node['EMA_21'] > last_node['EMA_50'])
-        bearish_structure = (last['EMA_9'] < last_node['EMA_21']) and (last_node['EMA_21'] < last_node['EMA_50'])
+        bullish_structure = (last_node['EMA_9'] > last_node['EMA_21']) and (last_node['EMA_21'] > last_node['EMA_50'])
+        bearish_structure = (last_node['EMA_9'] < last_node['EMA_21']) and (last_node['EMA_21'] < last_node['EMA_50'])
         
-        bullish_momentum = current_rsi >= 58 and prev['RSI'] < 58
-        bearish_momentum = current_rsi <= 42 and prev['RSI'] > 42
+        bullish_momentum = current_rsi >= 58 and prev_node['RSI'] < 58
+        bearish_momentum = current_rsi <= 42 and prev_node['RSI'] > 42
         
-        # Check Strategy Entry Triggers
         if bullish_structure and (bullish_momentum or current_rsi > 60) and volume_shock:
             sl = round(current_price - (1.5 * atr_band), 2)
             target = round(current_price + (2.5 * atr_band), 2)
@@ -72,7 +70,6 @@ for asset_name, ticker_symbol in ticker_universe.items():
             
             msg = f"🚀 *AUTOPILOT BREAKOUT BUY*\n📦 *Asset:* {asset_name}\n💵 *Price:* ₹{current_price:.2f}\n🎯 *Tgt:* ₹{target}\n🛡️ *SL:* ₹{sl}\n📈 *TSL:* ₹{tsl}"
             send_telegram_alert(msg)
-            print(f"Signal sent for {asset_name}")
             
         elif bearish_structure and (bearish_momentum or current_rsi < 40) and volume_shock:
             sl = round(current_price + (1.5 * atr_band), 2)
@@ -81,9 +78,8 @@ for asset_name, ticker_symbol in ticker_universe.items():
             
             msg = f"⚠️ *AUTOPILOT BREAKDOWN SHORT*\n📦 *Asset:* {asset_name}\n💵 *Price:* ₹{current_price:.2f}\n🎯 *Tgt:* ₹{target}\n🛡️ *SL:* ₹{sl}\n📈 *TSL:* ₹{tsl}"
             send_telegram_alert(msg)
-            print(f"Signal sent for {asset_name}")
             
     except Exception as e:
-        print(f"Error scanning {asset_name}: {str(e)}")
+        pass
 
 print("Autopilot Session Completed Successfully.")
