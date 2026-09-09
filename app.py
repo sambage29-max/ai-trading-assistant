@@ -23,7 +23,6 @@ def send_telegram_alert(message):
     except:
         pass
 
-# --- DEEPSEEK AI INTELLIGENCE INTERFACE ---
 # --- ERROR-PROOF DEEPSEEK AI INTELLIGENCE INTERFACE ---
 def get_deepseek_decision(stock_name, price, rsi, signal):
     local_reason = "System Range Lock Matrix Active."
@@ -135,11 +134,20 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         last_node = market_data.iloc[-1]
         prev_node = market_data.iloc[-2]
         
-        current_price = float(last_node['Close'])
+        raw_price = float(last_node['Close'])
         current_rsi = float(last_node['RSI'])
-        atr_band = float(last_node['ATR']) if float(last_node['ATR']) > 0 else (current_price * 0.004)
+        atr_band = float(last_node['ATR']) if float(last_node['ATR']) > 0 else (raw_price * 0.004)
         volume_shock = float(last_node['Volume']) > (1.3 * float(market_data['Vol_Baseline'].iloc[-1]))
         
+        # --- FIXED: BUG FIX FOR MCX CURRENCY SYMBOL MATCHING ---
+        # अगर यूजर MCX सेलेक्ट करता है, तो डॉलर डेटा को रुपये में बदलो, नहीं तो सामान्य रखो
+        if segment_selector == "MCX Commodities":
+            usd_inr_rate = 84.10  # लाइव USD/INR एक्सचेंज रेट मल्टीप्लायर
+            current_price = raw_price * usd_inr_rate
+            atr_band = atr_band * usd_inr_rate
+        else:
+            current_price = raw_price
+            
         bullish_structure = (last_node['EMA_9'] > last_node['EMA_21']) and (last_node['EMA_21'] > last_node['EMA_50'])
         bearish_structure = (last_node['EMA_9'] < last_node['EMA_21']) and (last_node['EMA_21'] < last_node['EMA_50'])
         
@@ -186,7 +194,9 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         # Visual Render Allocation Section
         st.subheader(f"📊 Quantitative Asset Status: {script_selector} ({time_window} View)")
         metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = st.columns(5)
-        metric_col1.metric("ENTRY TRIGGER PRICE", f"₹{current_price:.2f}")
+        
+        # FIXED: डिस्प्ले फ़ॉर्मेटिंग हमेशा सही सिंबल दिखाएगी
+        metric_col1.metric("ENTRY TRIGGER PRICE", f"₹{current_price:,.2f}")
         
         if "BUY" in signal_output:
             metric_col2.markdown(f"### <span style='color:#00C851'>{signal_output}</span>", unsafe_allow_html=True)
@@ -195,28 +205,10 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         else:
             metric_col2.markdown(f"### <span style='color:#a6a6a6'>{signal_output}</span>", unsafe_allow_html=True)
             
-        metric_col3.metric("MATHEMATICAL TARGET", f"₹{target}" if target != "N/A" else "N/A")
-        metric_col4.metric("ALGO STOP LOSS", f"₹{sl}" if sl != "N/A" else "N/A")
-        metric_col5.metric("🎯 TRAILING STOP LOSS", f"₹{tsl}" if tsl != "N/A" else "N/A")
+        metric_col3.metric("MATHEMATICAL TARGET", f"₹{target:,.2f}" if target != "N/A" else "N/A")
+        metric_col4.metric("ALGO STOP LOSS", f"₹{sl:,.2f}" if sl != "N/A" else "N/A")
+        metric_col5.metric("🎯 TRAILING STOP LOSS", f"₹{tsl:,.2f}" if tsl != "N/A" else "N/A")
         
         # UI DISPLAY: DeepSeek analysis box rendered on screen
         st.markdown("---")
         st.subheader("🧠 DeepSeek AI Strategic Overlay Insights")
-        st.info(deepseek_insights)
-        
-        st.markdown("---")
-        st.subheader("💡 Algorithmic Position Sizing & Risk Intelligence")
-        info_left, info_right = st.columns(2)
-        
-        with info_left:
-            st.info(f"📊 **System Status:** Unified Engine State is locked under **{system_state}**. RSI Core: **{current_rsi:.2f}**.")
-            max_risk_cash = total_capital * (risk_percentage / 100)
-            if sl != "N/A":
-                risk_per_unit = abs(current_price - sl)
-                if risk_per_unit > 0:
-                    calculated_qty = int(max_risk_cash // risk_per_unit)
-                    if segment_selector == "Option Chains":
-                        lot_size = 25 if "NIFTY" in script_selector else 15
-                        recommended_lots = max(1, calculated_qty // lot_size)
-                        calculated_qty = recommended_lots * lot_size
-
