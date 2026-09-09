@@ -217,6 +217,6 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         
         metric_col1.metric("ENTRY TRIGGER PRICE", f"₹{current_price:,.2f}")
         
-        if "BUY" in signal_output:
-            metric_col2.markdown(f"### <span style='color:#00C851'>{signal_output}</span>", unsafe_allow_html=True)
-        elif "SHORT" in signal_output:
+        # सरलीकृत सिग्नल डिस्प्ले (बिना किसी नेस्टेड इफ ब्लॉक के जो एरर करता था)
+        metric_col2.write(f"### {signal_output}")
+            
