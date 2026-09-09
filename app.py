@@ -217,4 +217,3 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             metric_col2.markdown(f"### <span style='color:#00C851'>{signal_output}</span>", unsafe_allow_html=True)
         elif "SHORT" in signal_output:
             metric_col2.markdown(f"### <span style='color:#ff4444'>{signal_output}</span>", unsafe_allow_html=True)
-        else:
