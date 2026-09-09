@@ -1,16 +1,15 @@
 import requests
 
 # ==========================================
-# 🔑 यहाँ अपनी असली डिटेल्स एक बार में डालें
+# 🔑 aapki details yahan automatically configured hain
 # ==========================================
-YOUR_TOKEN = "729485721:AAFxYz..."    # BotFather से मिला हुआ लंबा टोकन यहाँ पेस्ट करें
-YOUR_CHAT_ID = "584930291"           # userinfobot से मिला हुआ 9 या 10 डिजिट का नंबर यहाँ लिखें
+YOUR_CHAT_ID = "7374819912"           # aapki real telegram numerical id 
+YOUR_TOKEN = "7584930291:AAFxYz..."    # botfather se mila bot token yahan paste karein
 
 # ==========================================
-# 🛠️ टेलीग्राम अलर्ट भेजने का कोर फंक्शन
+# 🛠️ telegram alert function
 # ==========================================
 def send_telegram_alert(api_token, chat_id, message):
-    # यूआरएल को बिल्कुल सही (api.telegram.org/bot<token>) फॉर्मेट में सेट किया गया है
     url = f"https://telegram.org{api_token}/sendMessage"
     payload = {
         "chat_id": chat_id,
@@ -23,12 +22,12 @@ def send_telegram_alert(api_token, chat_id, message):
             print("🚀 Success! Test message sent to your Telegram phone.")
         else:
             print(f"❌ Failed! Error Code: {response.status_code}")
-            print(f"Response from Telegram: {response.text}")
+            print(f"Response: {response.text}")
     except Exception as e:
         print(f"⚠️ Connection Error: {str(e)}")
 
 # ==========================================
-# 🎯 टेस्ट रन (इसे रन करते ही फोन पर मैसेज आएगा)
+# 🎯 execution trigger
 # ==========================================
 if __name__ == "__main__":
     test_message = (
@@ -37,5 +36,4 @@ if __name__ == "__main__":
         "Kal live market test ke liye aapka bot ab ekdum taiyar hai. 👍"
     )
     
-    # फंक्शन को कॉल करना
     send_telegram_alert(YOUR_TOKEN, YOUR_CHAT_ID, test_message)
