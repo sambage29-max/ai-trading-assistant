@@ -4,16 +4,12 @@ import yfinance as yf
 import numpy as np
 import requests
 
-# 1. Page Configuration & Setup
+# 1. Page Configuration & Title
 st.set_page_config(page_title="Ultimate AI Trading System", layout="wide")
 st.title("🛡️ Institutional Grade AI Multi-Asset Trading Engine")
-st.caption("Advanced Confluence Architecture: Triple EMA + Volume Shock Analytics + Option Chain Predictor + Dynamic Trailing SL + Risk Calculator + Live Trade Log + Telegram Alerts")
+st.caption("Advanced Confluence Architecture: Triple EMA + Volume Shock Analytics + Option Chain Predictor + Dynamic Trailing SL + Risk Calculator + Telegram Alerts")
 
-# 2. Safe Session State initialization for trade storage arrays
-if 'trade_log' not in st.session_state:
-    st.session_state.trade_log = []
-
-# --- TELEGRAM SYSTEM LOGIC (PERMANENT LOCKED) ---
+# --- TELEGRAM SYSTEM CREDENTIALS (PERMANENT FIXED) ---
 TELEGRAM_TOKEN = "8680517650:AAHYrpb5j88XNGIoK-xu-hC-qZWs3RtCHkk"
 TELEGRAM_CHAT_ID = "7374819912"
 
@@ -22,10 +18,10 @@ def send_telegram_alert(message):
     payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}
     try:
         requests.post(url, json=payload, timeout=10)
-    except Exception as e:
+    except:
         pass
 
-# 3. Dropdown Configuration Panel UI
+# 2. Sidebar Layout Configuration Panel
 st.sidebar.header("🕹️ Multi-Asset Universe Configuration")
 segment_selector = st.sidebar.selectbox("Market Segment", ["Option Chains", "Intraday Equity", "MCX Commodities"])
 
@@ -50,7 +46,7 @@ st.sidebar.header("💰 Risk Management Dashboard")
 total_capital = st.sidebar.number_input("Your Trading Capital (₹)", min_value=1000, value=50000, step=5000)
 risk_percentage = st.sidebar.slider("Max Risk Per Trade (%)", min_value=0.5, max_value=5.0, value=1.0, step=0.5)
 
-# 4. Primary Quantitative Calculation Button Trigger
+# 3. Main Data Core Trigger Process Loop
 if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
     st.write("### 📊 Market Scan Results")
     
@@ -62,7 +58,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         if isinstance(market_data.columns, pd.MultiIndex):
             market_data.columns = market_data.columns.droplevel(1)
             
-        # Calculation Arrays Elements Block
+        # Standard Advanced Technical Analytics 
         market_data['EMA_9'] = market_data['Close'].ewm(span=9, adjust=False).mean()
         market_data['EMA_21'] = market_data['Close'].ewm(span=21, adjust=False).mean()
         market_data['EMA_50'] = market_data['Close'].ewm(span=50, adjust=False).mean()
@@ -98,6 +94,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         else:
             base_strike = round(current_price / 50) * 50
             
+        # Default Initialization Status
         signal_output = "⏳ ALGO SHIELD ACTIVE (STAY CASH / HOLD)"
         sl = "N/A"
         target = "N/A"
@@ -106,6 +103,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
         system_state = "SAFE RANGE PATTERN LOCK"
         calculated_qty = 0
         
+        # Confluence Entry Matrix Checks
         if bullish_structure and (bullish_momentum or current_rsi > 60) and volume_shock:
             signal_output = "⚡ INSTITUTIONAL BUY SIGNALS"
             sl = round(current_price - (1.5 * atr_band), 2)
@@ -122,7 +120,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             deriv_tip = f"{base_strike + 50} PE" if segment_selector == "Option Chains" else "N/A"
             system_state = "HIGH WIN-RATE"
             
-        # Metric Allocations Core Displays Layout
+        # Visual Render Allocation Section
         st.subheader(f"📊 Quantitative Asset Status: {script_selector} ({time_window} View)")
         metric_col1, metric_col2, metric_col3, metric_col4, metric_col5 = st.columns(5)
         metric_col1.metric("ENTRY TRIGGER PRICE", f"₹{current_price:.2f}")
@@ -167,7 +165,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
             else:
                 st.warning("🎯 **Options Chain Contract:** Framework conditions not met yet. Derivative module locked.")
         
-        # Trigger Auto Telegram Message on Action Signals
+        # Trigger Live Automated Message Push
         if "HOLD" not in signal_output:
             alert_text = (
                 f"🚨 *AI TRADING ALERT* 🚨\n\n"
@@ -181,10 +179,8 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
                 f"🔑 *Option Contract:* {deriv_tip}"
             )
             send_telegram_alert(alert_text)
-
-        if "HOLD" not in signal_output and calculated_qty > 0:
-            st.markdown("---")
-            st.subheader("📝 Live Trade Simulator Recorder")
-            if st.button("📥 Log Current Signal to History Dashboard"):
-                new_trade = {
-                    "Asset": script_selector,
+            
+        st.subheader("📉 Real-Time Structural Waveform")
+        st.line_chart(market_data[['Close']])
+else:
+    st.warning("👈 Open the sidebar navigation menu using top-left '>>' layout toggle and click 'Run Advanced Institutional Scan'.")
