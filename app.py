@@ -33,6 +33,25 @@ ticker_matrix = {
         "MIDCPNIFTY": "^NSEMDCP50",
         "SENSEX": "^BSESN"
     },
+    "Intraday Equity": {
+        "RELIANCE": "RELIANCE.NS", 
+        "TATA MOTORS": "TATAMOTORS.NS", 
+        "SBI": "SBIN.NS",
+        "HDFC BANK": "HDFCBANK.NS",
+        "ICICI BANK": "ICICIBANK.NS",
+        "AXIS BANK": "AXISBANK.NS",
+        "TCS": "TCS.NS",
+        "INFOSYS": "INFY.NS",
+        "WIPRO": "WIPRO.NS",
+        "ITC": "ITC.NS",
+        "TATA STEEL": "TATASTEEL.NS",
+        "ADANI ENT": "ADANIENT.NS",
+        "M&M": "M&M.NS",
+        "MARUTI": "MARUTI.NS"
+    },
+    "MCX Commodities": {"CRUDE OIL": "CL=F", "GOLD": "GC=F", "SILVER": "SI=F"}
+}
+
     "Intraday Equity": {"RELIANCE": "RELIANCE.NS", "TATA MOTORS": "TATAMOTORS.NS", "SBI": "SBIN.NS"},
     "MCX Commodities": {"CRUDE OIL": "CL=F", "GOLD": "GC=F", "SILVER": "SI=F"}
 }
