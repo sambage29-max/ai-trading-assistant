@@ -9,7 +9,7 @@ st.title("🛡️ Institutional Grade AI Multi-Asset Trading Engine")
 st.caption("Advanced Confluence Architecture: Triple EMA + Volume Shock Analytics + Option Chain Predictor + Dynamic Trailing SL + Risk Calculator")
 
 # Advanced Mathematical Core with Trailing Stop Loss Engine
-def run_institutional_strategy(df, universe_type):
+def run_institutional_strategy(df, universe_type, script_selector):
     # 1. Structural Trend Confluence Matrices
     df['EMA_9'] = df['Close'].ewm(span=9, adjust=False).mean()
     df['EMA_21'] = df['Close'].ewm(span=21, adjust=False).mean()
@@ -47,8 +47,13 @@ def run_institutional_strategy(df, universe_type):
     bullish_momentum = current_rsi >= 58 and prev_node['RSI'] < 58
     bearish_momentum = current_rsi <= 42 and prev_node['RSI'] > 42
     
-    # Option Strike Mathematical Rounding Rules
-    base_strike = round(current_price / 50) * 50 if "Option" in universe_type else round(current_price / 100) * 100
+    # Option Strike Mathematical Rounding Rules for New Indices
+    if "NIFTY 50" in script_selector or "FINNIFTY" in script_selector:
+        base_strike = round(current_price / 50) * 50
+    elif "BANK NIFTY" in script_selector or "SENSEX" in script_selector:
+        base_strike = round(current_price / 100) * 100
+    else:
+        base_strike = round(current_price / 50) * 50
     
     # Institutional Entry Filter Logic
     if bullish_structure and (bullish_momentum or current_rsi > 60) and volume_shock:
@@ -75,7 +80,13 @@ st.sidebar.header("🕹️ Multi-Asset Universe Configuration")
 segment_selector = st.sidebar.selectbox("Market Segment", ["Option Chains", "Intraday Equity", "MCX Commodities"])
 
 ticker_matrix = {
-    "Option Chains": {"NIFTY 50": "^NSEI", "BANK NIFTY": "^NSEBANK"},
+    "Option Chains": {
+        "NIFTY 50": "^NSEI", 
+        "BANK NIFTY": "^NSEBANK",
+        "FINNIFTY": "NIFTY_FIN_SERVICE.NS",
+        "MIDCPNIFTY": "^NSEMDCP50",
+        "SENSEX": "^BSESN"
+    },
     "Intraday Equity": {"RELIANCE": "RELIANCE.NS", "TATA MOTORS": "TATAMOTORS.NS", "SBI": "SBIN.NS"},
     "MCX Commodities": {"CRUDE OIL": "CL=F", "GOLD": "GC=F", "SILVER": "SI=F"}
 }
@@ -84,7 +95,7 @@ script_selector = st.sidebar.selectbox("Target Derivative Script", list(ticker_m
 ticker_symbol = ticker_matrix[segment_selector][script_selector]
 time_window = st.sidebar.selectbox("Strategy Timeframe Window", ["5m", "15m", "60m"])
 
-# --- NEW: Dynamic Risk Capital Controls Dashboard ---
+# Risk Capital Controls Dashboard
 st.sidebar.markdown("---")
 st.sidebar.header("💰 Risk Management Dashboard")
 total_capital = st.sidebar.number_input("Your Trading Capital (₹)", min_value=1000, value=50000, step=5000)
@@ -98,7 +109,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
                 if isinstance(market_data.columns, pd.MultiIndex):
                     market_data.columns = market_data.columns.droplevel(1)
                 
-                signal_output, entry, target, sl, tsl, rsi_val, deriv_tip, system_state = run_institutional_strategy(market_data, segment_selector)
+                signal_output, entry, target, sl, tsl, rsi_val, deriv_tip, system_state = run_institutional_strategy(market_data, segment_selector, script_selector)
                 
                 # Interface Representation
                 st.subheader(f"📊 Quantitative Asset Status: {script_selector} ({time_window} View)")
@@ -118,7 +129,7 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
                 metric_col4.metric("ALGO STOP LOSS", f"₹{sl}" if sl != "N/A" else "N/A")
                 metric_col5.metric("🎯 TRAILING STOP LOSS", f"₹{tsl}" if tsl != "N/A" else "N/A")
                 
-                # --- NEW: Execution Intelligence & Capital Allocation Core ---
+                # Execution Intelligence & Capital Allocation Core
                 st.markdown("---")
                 st.subheader("💡 Algorithmic Position Sizing & Risk Intelligence")
                 
@@ -126,14 +137,12 @@ if st.sidebar.button("🚀 Run Advanced Institutional Scan"):
                 with info_left:
                     st.info(f"📊 **System Status:** Unified Engine State is locked under **{system_state}**. Current Momentum Core RSI stands at **{rsi_val:.2f}**.")
                     
-                    # Mathematical Position Sizing calculation
                     max_risk_cash = total_capital * (risk_percentage / 100)
                     if sl != "N/A":
                         risk_per_unit = abs(entry - sl)
                         if risk_per_unit > 0:
                             calculated_qty = int(max_risk_cash // risk_per_unit)
                             
-                            # Options rules display versus equity limits
                             if segment_selector == "Option Chains":
                                 lot_size = 25 if "NIFTY" in script_selector else 15
                                 recommended_lots = max(1, calculated_qty // lot_size)
