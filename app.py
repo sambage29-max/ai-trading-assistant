@@ -12,7 +12,6 @@ st.set_page_config(page_title="AI Trading Assistant", page_icon="📈", layout="
 st.title("🚀 Professional AI Trading Assistant & Scanner")
 
 # Streamlit Secrets se API keys aur credentials fetch karna
-# Make sure to add these in your Streamlit Cloud Dashboard -> Settings -> Secrets
 try:
     DEEPSEEK_API_KEY = st.secrets["DEEPSEEK_API_KEY"]
     TELEGRAM_BOT_TOKEN = st.secrets["TELEGRAM_BOT_TOKEN"]
@@ -21,10 +20,10 @@ except Exception as e:
     st.error("❌ Streamlit Secrets missing! Please configure DEEPSEEK_API_KEY, TELEGRAM_BOT_TOKEN, and TELEGRAM_CHAT_ID.")
     st.stop()
 
-# Initialize DeepSeek Client (Uses OpenAI compatible SDK)
+# FIXED: Removed '/v1' to prevent CloudFront 403 Method Not Allowed Error
 client = OpenAI(
     api_key=DEEPSEEK_API_KEY,
-    base_url="https://deepseek.com"
+    base_url="https://api.deepseek.com" 
 )
 
 # Initialize Session State for Trade Logs
@@ -38,7 +37,6 @@ if "trade_log" not in st.session_state:
 def get_market_data(ticker_symbol):
     """Yahoo Finance se data fetch karne ka professional function with error handling"""
     try:
-        # Ticker object create karna aur last 5 days ka data download karna
         ticker = df.Ticker(ticker_symbol)
         hist = ticker.history(period="5d", interval="1d")
         
@@ -84,7 +82,6 @@ def send_telegram_alert(symbol, signal, price, reasoning):
 
 def analyze_with_deepseek(symbol, data_df):
     """DeepSeek API v3 ka use karke quantitative technical analysis generate karna"""
-    # DataFrame ka last row (latest closing data) fetch karna
     latest_row = data_df.iloc[-1]
     close_price = latest_row['Close']
     open_price = latest_row['Open']
@@ -92,7 +89,6 @@ def analyze_with_deepseek(symbol, data_df):
     low_price = latest_row['Low']
     volume = latest_row['Volume']
 
-    # AI ke liye formal prompt taiyar karna
     prompt = (
         f"You are an expert financial trading system. Analyze the following daily market data for {symbol}:\n"
         f"- Open: {open_price:.2f}, High: {high_price:.2f}, Low: {low_price:.2f}, Close: {close_price:.2f}\n"
@@ -104,7 +100,7 @@ def analyze_with_deepseek(symbol, data_df):
 
     try:
         response = client.chat.completions.create(
-            model="deepseek-chat", # DeepSeek V3 architecture
+            model="deepseek-chat", # Standard model endpoint
             messages=[
                 {"role": "system", "content": "You are a professional algorithmic trading assistant. Be precise and concise."},
                 {"role": "user", "content": prompt}
@@ -113,9 +109,8 @@ def analyze_with_deepseek(symbol, data_df):
             max_tokens=150
         )
         
-        output_text = response.choices[0].message.content
+        output_text = response.choices.message.content
         
-        # Output parsing logic safely
         signal = "HOLD"
         reason = "No clear signal generated."
         
@@ -134,11 +129,10 @@ def analyze_with_deepseek(symbol, data_df):
 # 3. USER INTERFACE & APP FLOW
 # ==============================================================================
 
-# Sahi Tickers list bina kisi typo ya extra spacing ke (Yfinance supported)
 ASSET_DICTIONARY = {
     "Intraday Equity": {
         "RELIANCE": "RELIANCE.NS",
-        "TATA MOTORS": "TATAMOTORS.NS", # Fixed 404 issue by ensuring structural verification
+        "TATA MOTORS": "TATAMOTORS.NS", 
         "SBI": "SBIN.NS"
     },
     "Global Indices / Crypto": {
@@ -147,7 +141,6 @@ ASSET_DICTIONARY = {
     }
 }
 
-# Sidebar control panel
 st.sidebar.header("🛠️ Control Panel")
 category = st.sidebar.selectbox("Asset Category Chunein", list(ASSET_DICTIONARY.keys()))
 selected_asset = st.sidebar.selectbox("Asset Select Karein", list(ASSET_DICTIONARY[category].keys()))
@@ -155,20 +148,17 @@ ticker_to_run = ASSET_DICTIONARY[category][selected_asset]
 
 if st.sidebar.button("⚡ Run AI Analysis & Send Alert"):
     with st.spinner(f"Fetching data and analyzing {selected_asset}..."):
-        # Step 1: Data fetch karna
         market_data = get_market_data(ticker_to_run)
         
         if market_data is not None:
             st.success(f"✅ Market data successfully loaded for {selected_asset} ({ticker_to_run})")
             st.dataframe(market_data.tail(3))
             
-            # Step 2: DeepSeek AI analysis run karna
             signal, reasoning, last_price = analyze_with_deepseek(selected_asset, market_data)
             
-            # Step 3: Screen par results display karna
             st.subheader("🤖 AI Analysis Result")
             if signal == "BUY":
-                st.green(f"**SIGNAL:** {signal}")
+                st.success(f"**SIGNAL:** {signal}")
             elif signal == "SELL":
                 st.error(f"**SIGNAL:** {signal}")
             else:
@@ -176,7 +166,6 @@ if st.sidebar.button("⚡ Run AI Analysis & Send Alert"):
                 
             st.info(f"**AI Reasoning:** {reasoning}")
             
-            # Step 4: Telegram Alert Trigger karna
             if signal in ["BUY", "SELL"]:
                 st.write("📤 Sending alert to Telegram channel...")
                 tele_success = send_telegram_alert(selected_asset, signal, last_price, reasoning)
@@ -188,7 +177,6 @@ if st.sidebar.button("⚡ Run AI Analysis & Send Alert"):
             else:
                 st.write("ℹ️ HOLD signal par Telegram alert bypass (skip) kar diya gaya hai.")
                 
-            # Session history update karna
             new_trade = {
                 "Time": datetime.now().strftime("%H:%M:%S"),
                 "Asset": selected_asset,
@@ -197,7 +185,6 @@ if st.sidebar.button("⚡ Run AI Analysis & Send Alert"):
             }
             st.session_state.trade_log.append(new_trade)
 
-# App ke dashboard par Active Logs display karna
 st.subheader("📊 Session Run History Log")
 if st.session_state.trade_log:
     st.table(pd.DataFrame(st.session_state.trade_log))
