@@ -2,6 +2,11 @@ import streamlit as st
 import pandas as pd
 import requests
 import numpy as np
+import os
+import sys
+
+# Streamlit Cloud par local file import crash na ho, isliye absolute path inject kar rahe hain
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from indicators import calculate_world_class_signals
 
 st.set_page_config(page_title="Multi-Segment Pro Scanner", layout="wide")
