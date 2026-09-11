@@ -1,69 +1,33 @@
-import ta
+import pandas as pd
+import pandas_ta as ta  # Install via: pip install pandas-ta
 
-def calculate_indicators(df_live):
-
-    price = float(df_live["Close"].iloc[-1])
-
-    rsi = ta.momentum.RSIIndicator(
-        df_live["Close"]
-    ).rsi().iloc[-1]
-
-    ema20 = ta.trend.EMAIndicator(
-        df_live["Close"],
-        window=20
-    ).ema_indicator().iloc[-1]
-
-    ema50 = ta.trend.EMAIndicator(
-        df_live["Close"],
-        window=50
-    ).ema_indicator().iloc[-1]
-
-    macd_line = ta.trend.MACD(
-        df_live["Close"]
-    ).macd().iloc[-1]
-
-    signal_line = ta.trend.MACD(
-        df_live["Close"]
-    ).macd_signal().iloc[-1]
-
-    if macd_line > signal_line:
-        macd = "Bullish 🟢"
-    else:
-        macd = "Bearish 🔴"
-
-    atr = ta.volatility.AverageTrueRange(
-        high=df_live["High"],
-        low=df_live["Low"],
-        close=df_live["Close"],
-        window=14
-    ).average_true_range().iloc[-1]
-
-    adx = ta.trend.ADXIndicator(
-        high=df_live["High"],
-        low=df_live["Low"],
-        close=df_live["Close"],
-        window=14
-    ).adx().iloc[-1]
-
-    open_price = float(df_live["Open"].iloc[-1])
-    close_price = float(df_live["Close"].iloc[-1])
-
-    if close_price > open_price:
-        candle = "Bullish 🟢"
-    elif close_price < open_price:
-        candle = "Bearish 🔴"
-    else:
-        candle = "Doji 🟡"
-
-    return {
-    "price": price,
-    "rsi": rsi,
-    "ema20": ema20,
-    "ema50": ema50,
-    "macd": macd,
-    "atr": atr,
-    "adx": adx,
-    "candle": candle,
-    "volume": float(df_live["Volume"].iloc[-1]),
-    "avg_volume": float(df_live["Volume"].rolling(20).mean().iloc[-1])
-}
+def calculate_world_class_signals(df):
+    """
+    Calculates technical indicators and generates a high-probability 
+    Delivery Signal based on Trend, Momentum, and Volume confluence.
+    """
+    if len(df) < 200:
+        return df
+    
+    # 1. Trend Indicators
+    df['EMA_50'] = ta.ema(df['close'], length=50)
+    df['EMA_200'] = ta.ema(df['close'], length=200)
+    
+    # 2. Momentum Indicators
+    df['RSI'] = ta.rsi(df['close'], length=14)
+    macd = ta.macd(df['close'], fast=12, slow=26, signal=9)
+    df = pd.concat([df, macd], axis=1)
+    
+    # 3. Volume Benchmark (5-day rolling average)
+    df['Vol_Avg'] = df['volume'].rolling(window=5).mean()
+    
+    # 4. High-Probability Signal Generation Logic
+    df['Signal'] = 'HOLD'
+    
+    # Conditions for Delivery Buy
+    strong_trend = df['EMA_50'] > df['EMA_200']
+    oversold_reversal = (df['RSI'] > 35) & (df['RSI'].shift(1) <= 35)
+    volume_breakout = df['volume'] > (df['Vol_Avg'] * 1.8)
+    
+    df.loc[strong_trend & oversold_reversal & volume_breakout, 'Signal'] = 'BUY'
+    return df
