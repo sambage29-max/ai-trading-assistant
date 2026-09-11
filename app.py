@@ -51,7 +51,7 @@ with tab2:
     # Dropdown for major indexes
     index_choice = st.selectbox("Select Index:", ["NIFTY", "BANKNIFTY"])
     
-    # Mock Options Chain Data Fixed
+    # Mock Options Chain Data FIXED
     options_data = {
         "Strike Price":,
         "Call OI (Lakhs)": [12.4, 25.1, 48.9, 18.2, 35.6], 
