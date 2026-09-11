@@ -1,10 +1,9 @@
- import streamlit as st
+import streamlit as st
 import pandas as pd
 import requests
 import numpy as np
 import plotly.graph_objects as go
 
-# 1. INDENTATION SAFE MATHEMATICAL INDICATORS ENGINE
 def calculate_world_class_signals(df):
     if df is None or df.empty or len(df) < 50:
         return df
@@ -24,10 +23,8 @@ def calculate_world_class_signals(df):
     df.loc[strong_trend & oversold_reversal & volume_breakout, 'Signal'] = 'BUY'
     return df
 
-# 2. PRO-TRADER THEME & SETTINGS ALIGNMENT
 st.set_page_config(page_title="QUANT TERMINAL v2.0", layout="wide")
 
-# Custom CSS Injector for Premium HUD Dashboard Experience
 st.markdown("""
     <style>
         .reportview-container { background: #0A0E17; }
@@ -42,12 +39,9 @@ st.markdown("<h1 style='text-align: center; color: #00FF66; font-family: monospa
 st.markdown("<p style='text-align: center; color: #64748B;'>Premium Multi-Segment Signal Console</p>", unsafe_allow_html=True)
 st.write("---")
 
-# 3. AUTO-LOGIN CREDENTIALS SECURE FALLBACK LOGIC
-# Streamlit secrets will automatically fetch credentials without re-entering them daily
 api_key = st.secrets.get("UPSTOX_API_KEY", "")
 access_token = st.secrets.get("UPSTOX_ACCESS_TOKEN", "")
 
-# In case secrets are empty, allow a smart bypass directly on the UI container
 if not api_key or not access_token:
     with st.sidebar.expander("🔑 Setup Upstox Keys (One-Time Only)", expanded=False):
         api_key = st.text_input("Upstox API Key", type="password", value=api_key)
@@ -58,7 +52,6 @@ segment = st.sidebar.selectbox(
     ["Cash (Delivery)", "Cash (Intraday)", "Options (Nifty/BankNifty)", "MCX Commodity"]
 )
 
-# Configuration Tuning
 if segment == "Cash (Delivery)":
     watchlist, timeframe, rr_ratio = ["RELIANCE", "TCS", "INFY", "HDFCBANK", "ICICIBANK"], "1D", 2.0
 elif segment == "Cash (Intraday)":
@@ -81,7 +74,6 @@ def fetch_upstox_live_data(ticker, interval, api_key, token):
                 return df.iloc[::-1].reset_index(drop=True)
         except Exception: pass
 
-    # High-Performance Structural Vector Market Grid Simulator
     np.random.seed(len(ticker))
     dates = pd.date_range(end=pd.Timestamp.now(), periods=100, freq='D' if interval == '1D' else '15min')
     close_p = np.random.randint(400, 2800) * (1 + np.random.normal(0.0008, 0.014, size=100)).cumprod()
@@ -90,14 +82,13 @@ def fetch_upstox_live_data(ticker, interval, api_key, token):
         'low': close_p * 0.988, 'close': close_p, 'volume': np.random.randint(8000, 150000, size=100)
     })
 
-# 4. RUN SYSTEM REAL-TIME DATA MATRIX
 detected_alerts = []
 all_stock_data = {}
 
-col1, col2 = st.columns([1, 4])
+col1, col2 = st.columns(2)
 with col1:
-    st.markdown("<h4 style='color: #64748B;'>📡 TERMINAL</h4>", unsafe_allow_html=True)
-    st.metric("SEGMENT", timeframe)
+    st.markdown("<h4 style='color: #64748B;'>📡 TERMINAL TIMEFRAME</h4>", unsafe_allow_html=True)
+    st.metric("TIMEFRAME", timeframe)
 with col2:
     st.markdown("<h4 style='color: #64748B;'>🏁 ENGINE STATUS</h4>", unsafe_allow_html=True)
     scan_bar = st.progress(0.0)
@@ -123,7 +114,6 @@ for idx, symbol in enumerate(watchlist):
             })
     scan_bar.progress((idx + 1) / len(watchlist))
 
-# 5. RENDER SIGNAL BOARDS & CHARTS
 st.write("### 🎛️ Live Trading Signal Matrix")
 if detected_alerts:
     st.dataframe(pd.DataFrame(detected_alerts), use_container_width=True)
