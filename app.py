@@ -23,27 +23,25 @@ def calculate_world_class_signals(df):
     df.loc[strong_trend & oversold_reversal & volume_breakout, 'Signal'] = 'BUY'
     return df
 
-st.set_page_config(page_title="QUANT TERMINAL v2.0", layout="wide")
+st.set_page_config(page_title="ALPHA QUANT TERMINAL", layout="wide")
 
 st.markdown("""
     <style>
         .reportview-container { background: #0A0E17; }
-        .stMetric { background: #131A26; border: 1px solid #1E293B; border-radius: 8px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        div[data-testid="stMetricValue"] { color: #00FF66; font-family: 'Courier New', monospace; font-weight: bold; }
+        .stMetric { background: #131A26; border: 1px solid #1E293B; border-radius: 8px; padding: 15px; }
+        div[data-testid="stMetricValue"] { color: #00FF66; font-family: monospace; font-weight: bold; }
         .stDataFrame { border: 1px solid #1E293B; border-radius: 8px; }
-        h1, h2, h3 { font-family: 'Segoe UI', sans-serif; letter-spacing: 1px; }
     </style>
 """, unsafe_allow_html=True)
 
 st.markdown("<h1 style='text-align: center; color: #00FF66; font-family: monospace;'>📊 QUANT ALGO ENGINE v2.0</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #64748B;'>Premium Multi-Segment Signal Console</p>", unsafe_allow_html=True)
 st.write("---")
 
 api_key = st.secrets.get("UPSTOX_API_KEY", "")
 access_token = st.secrets.get("UPSTOX_ACCESS_TOKEN", "")
 
 if not api_key or not access_token:
-    with st.sidebar.expander("🔑 Setup Upstox Keys (One-Time Only)", expanded=False):
+    with st.sidebar.expander("🔑 Setup Upstox Keys (One-Time)", expanded=False):
         api_key = st.text_input("Upstox API Key", type="password", value=api_key)
         access_token = st.text_input("Access Token", type="password", value=access_token)
 
@@ -87,10 +85,8 @@ all_stock_data = {}
 
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown("<h4 style='color: #64748B;'>📡 TERMINAL TIMEFRAME</h4>", unsafe_allow_html=True)
-    st.metric("TIMEFRAME", timeframe)
+    st.metric("TIMEFRAME ACTIVE", timeframe)
 with col2:
-    st.markdown("<h4 style='color: #64748B;'>🏁 ENGINE STATUS</h4>", unsafe_allow_html=True)
     scan_bar = st.progress(0.0)
 
 for idx, symbol in enumerate(watchlist):
