@@ -12,8 +12,8 @@ st.write("---")
 
 # Sidebar Configuration Settings
 st.sidebar.header("🔑 Upstox API Auth")
-api_key = st.sidebar.text_input("Enter Upstox API Key", type="password")
-access_token = st.sidebar.text_input("Enter Access Token", type="password")
+api_key = st.sidebar.text_input("Enter Upstox API Key", type="password", key="up_key")
+access_token = st.sidebar.text_input("Enter Access Token", type="password", key="up_token")
 
 st.sidebar.write("---")
 st.sidebar.header("🎯 Segment Selector")
@@ -25,24 +25,19 @@ segment = st.sidebar.selectbox(
 # Custom Watchlists based on Segment Selection
 if segment == "Cash (Delivery)":
     watchlist = ["RELIANCE", "TCS", "INFY", "HDFCBANK", "ICICIBANK"]
-    timeframe = "1D" # Daily bars for safe delivery entry
+    timeframe = "1D"
 elif segment == "Cash (Intraday)":
     watchlist = ["TATAMOTORS", "RELIANCE", "SBIN", "BHARTIARTL", "LT"]
-    timeframe = "15minute" # 15 min strategy for day trading
+    timeframe = "15minute"
 elif segment == "Options (Nifty/BankNifty)":
     watchlist = ["NIFTY26SEP24500CE", "NIFTY26SEP24500PE", "BANKNIFTY26SEP52000CE", "BANKNIFTY26SEP52000PE"]
-    timeframe = "5minute" # Fast momentum tracking for options scaling
-else: # MCX Commodity
+    timeframe = "5minute"
+else:
     watchlist = ["CRUDEOIL26OCTFUT", "GOLD26DECFUT", "SILVER26DECFUT"]
     timeframe = "15minute"
 
 def fetch_upstox_live_data(ticker, interval, api_key, token):
-    """
-    Fetches real live structural candle vectors using Upstox Uplink V2 HTTP endpoints.
-    Falls back to high-fidelity market mapping if keys are empty or unauthenticated.
-    """
     if api_key and token:
-        # Actual production payload for Upstox V2 URL structure
         url = f"https://upstox.com{ticker}/{interval}/2026-09-11"
         headers = {'Accept': 'application/json', 'Authorization': f'Bearer {token}'}
         try:
@@ -51,18 +46,18 @@ def fetch_upstox_live_data(ticker, interval, api_key, token):
                 candles = res.json()['data']['candles']
                 df = pd.DataFrame(candles, columns=['date', 'open', 'high', 'low', 'close', 'volume', 'oi'])
                 df['date'] = pd.to_datetime(df['date'])
-                df = df.iloc[::-1].reset_index(drop=True) # reverse to chronological order
+                df = df.iloc[::-1].reset_index(drop=True)
                 return df
         except Exception:
             pass
 
-    # Safety Fallback System to ensure dashboard doesn't throw a bad matrix trace
+    # Safety High-Fidelity Simulation Fallback System
     np.random.seed(len(ticker))
     dates = pd.date_range(end=pd.Timestamp.now(), periods=250, freq='D' if interval == '1D' else '15min')
     base = np.random.randint(100, 2500)
     prices = base * (1 + np.random.normal(0.0005, 0.015, size=250)).cumprod()
     vols = np.random.randint(10000, 200000, size=250)
-    vols[-1] = vols[-5:].mean() * 2.1 # Force a breakthrough structure check row
+    vols[-1] = vols[-5:].mean() * 2.1
     
     return pd.DataFrame({'date': dates, 'close': prices, 'volume': vols})
 
@@ -72,16 +67,11 @@ scan_progress = st.progress(0)
 detected_signals = []
 
 for idx, symbol in enumerate(watchlist):
-    # Retrieve structural raw price candles
     df = fetch_upstox_live_data(symbol, timeframe, api_key, access_token)
-    
-    # Calculate pure custom mathematical mathematical indicator indicators.py parameters
     processed_df = calculate_world_class_signals(df)
     
-    if not processed_df.empty:
+    if df is not None and not processed_df.empty:
         latest = processed_df.iloc[-1]
-        
-        # Override specific intraday/options conditions if required
         if latest['Signal'] == 'BUY':
             detected_signals.append({
                 "Symbol / Contract": symbol,
