@@ -23,7 +23,7 @@ with tab1:
     intraday_data = {
         "Ticker": ["RELIANCE", "TCS", "INFY", "BHARTIARTL", "HDFCBANK"],
         "LTP": [2450.00, 4120.00, 1890.00, 1620.00, 1710.00],
-        "Volume_Multiplier": [2.5, 0.8, 3.1, 1.9, 0.5], # 2.5 means 2.5x normal volume
+        "Volume_Multiplier": [2.5, 0.8, 3.1, 1.9, 0.5], 
         "Signal": ["BUY", "NO SIGNAL", "BUY", "SHORT SELL", "NO SIGNAL"],
         "Stop_Loss": [2432.00, 0.0, 1871.00, 1632.00, 0.0],
         "Target": [2486.00, 0.0, 1928.00, 1596.00, 0.0]
@@ -51,11 +51,11 @@ with tab2:
     # Dropdown for major indexes
     index_choice = st.selectbox("Select Index:", ["NIFTY", "BANKNIFTY"])
     
-    # Mock Options Chain Data
+    # Mock Options Chain Data Fixed
     options_data = {
         "Strike Price":,
-        "Call OI (Lakhs)": [12.4, 25.1, 48.9, 18.2, 35.6], # Resistance tracker
-        "Put OI (Lakhs)": [42.1, 33.4, 15.2, 8.4, 2.1],   # Support tracker
+        "Call OI (Lakhs)": [12.4, 25.1, 48.9, 18.2, 35.6], 
+        "Put OI (Lakhs)": [42.1, 33.4, 15.2, 8.4, 2.1],   
         "LTP CALL": [210.00, 142.00, 88.00, 48.00, 22.00],
         "LTP PUT": [15.00, 38.00, 79.00, 134.00, 212.00]
     }
@@ -70,8 +70,8 @@ with tab2:
     # Render option chain table cleanly on phone screen
     st.dataframe(df_opt, use_container_width=True, hide_index=True)
     
-    # Artificial Intelligence Suggested Derivative Play
-    st.success("🤖 **AI Strategy Option Trigger:** NIFTY trading at 24,940. Pullback to Put OI Support area. Suggest entering **25000 CE** if price sustains above 24,900. SL: 15 pts | Target: 40 pts.")
+    # AI Suggested Derivative Play
+    st.success("🤖 **AI Strategy Option Trigger:** Pullback to Put OI Support area. Suggest entering ATM CE if price sustains. SL: 15 pts | Target: 40 pts.")
 
 # =========================================================================
 # 3. MCX COMMODITIES SEGMENT
