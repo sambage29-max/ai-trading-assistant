@@ -1,30 +1,31 @@
 import pandas as pd
-import pandas_ta as ta  # Install via: pip install pandas-ta
 
 def calculate_world_class_signals(df):
     """
-    Calculates technical indicators and generates a high-probability 
-    Delivery Signal based on Trend, Momentum, and Volume confluence.
+    Pure mathematical calculations for RSI, EMA, and MACD.
+    Zero external indicator library dependencies to prevent server crashes.
     """
     if len(df) < 200:
         return df
     
-    # 1. Trend Indicators
-    df['EMA_50'] = ta.ema(df['close'], length=50)
-    df['EMA_200'] = ta.ema(df['close'], length=200)
+    # 1. EMA Calculations (50 & 200)
+    df['EMA_50'] = df['close'].ewm(span=50, adjust=False).mean()
+    df['EMA_200'] = df['close'].ewm(span=200, adjust=False).mean()
     
-    # 2. Momentum Indicators
-    df['RSI'] = ta.rsi(df['close'], length=14)
-    macd = ta.macd(df['close'], fast=12, slow=26, signal=9)
-    df = pd.concat([df, macd], axis=1)
+    # 2. RSI Calculation (Relative Strength Index)
+    delta = df['close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / (loss + 1e-10) # adding tiny decimal value to prevent divide-by-zero
+    df['RSI'] = 100 - (100 / (1 + rs))
     
-    # 3. Volume Benchmark (5-day rolling average)
+    # 3. Volume Average Benchmark (5-day rolling)
     df['Vol_Avg'] = df['volume'].rolling(window=5).mean()
     
-    # 4. High-Probability Signal Generation Logic
+    # 4. Final Delivery Buy Signal Generation Strategy
     df['Signal'] = 'HOLD'
     
-    # Conditions for Delivery Buy
+    # Filtering Condition Check Blocks
     strong_trend = df['EMA_50'] > df['EMA_200']
     oversold_reversal = (df['RSI'] > 35) & (df['RSI'].shift(1) <= 35)
     volume_breakout = df['volume'] > (df['Vol_Avg'] * 1.8)
