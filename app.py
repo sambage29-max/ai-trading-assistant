@@ -1,17 +1,17 @@
 import streamlit as st
 import pandas as pd
 
-# Mobile friendly setup
+# Mobile responsive configuration
 st.set_page_config(page_title="AI Trading App", layout="centered")
 
 st.title("🎯 Pro AI Signal Generator")
 st.caption("Intraday | Options Chain | MCX Commodities")
 st.divider()
 
-# 3 Tabs for easy mobile navigation
+# 3 Navigation Tabs for phone screens
 tab1, tab2, tab3 = st.tabs(["⚡ Intraday", "📊 Options", "🔥 MCX"])
 
-# 1. INTRADAY EQUITY
+# 1. INTRADAY SECTION
 with tab1:
     st.subheader("⚡ Intraday Signals")
     data_intra = {
@@ -21,7 +21,7 @@ with tab1:
     }
     st.dataframe(pd.DataFrame(data_intra), use_container_width=True, hide_index=True)
 
-# 2. OPTIONS CHAIN
+# 2. OPTIONS CHAIN SECTION
 with tab2:
     st.subheader("📊 NIFTY Options Chain")
     data_opt = {
@@ -32,7 +32,7 @@ with tab2:
     st.dataframe(pd.DataFrame(data_opt), use_container_width=True, hide_index=True)
     st.warning("🚨 Resistance at 25000 | Support at 24800")
 
-# 3. MCX COMMODITIES
+# 3. MCX COMMODITIES SECTION
 with tab3:
     st.subheader("🔥 MCX Live Setup")
     data_mcx = {
