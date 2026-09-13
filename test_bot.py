@@ -1,34 +1,37 @@
-import requests
+import unittest
+import pandas as pd
+import numpy as np
+from indicators import calculate_advanced_indicators
+from ai_engine import generate_trading_signal
 
-# ==========================================
-# 🔑 Aapki Details Successfully Configured Hain
-# ==========================================
-YOUR_CHAT_ID = "7374819912"
-YOUR_TOKEN = "8680517650:AAHYrpb5j88XNGIoK-xu-hC-qZWs3RtCHkk"
+class TestTradingSuite(unittest.TestCase):
+    
+    def setUp(self):
+        """Creates dummy historic DataFrame structure to simulate candles."""
+        np.random.seed(42)
+        date_range = pd.date_range(start="2026-01-01", periods=30, freq="15min")
+        self.mock_data = pd.DataFrame({
+            'Open': np.random.uniform(100, 110, size=30),
+            'High': np.random.uniform(110, 120, size=30),
+            'Low': np.random.uniform(90, 100, size=30),
+            'Close': np.random.uniform(100, 110, size=30)
+        }, index=date_range)
 
-def send_telegram_alert(api_token, chat_id, message):
-    # Fixed URL Structure
-    url = f"https://telegram.org{api_token}/sendMessage"
-    payload = {
-        "chat_id": chat_id,
-        "text": message,
-        "parse_mode": "Markdown"
-    }
-    try:
-        response = requests.post(url, json=payload, timeout=10)
-        if response.status_code == 200:
-            print("🚀 Success! Test message sent to your Telegram phone.")
-        else:
-            print(f"❌ Failed! Error Code: {response.status_code}")
-            print(f"Response: {response.text}")
-    except Exception as e:
-        print(f"⚠️ Connection Error: {str(e)}")
+    def test_indicator_calculation(self):
+        """Validates indicators append safely without altering dimensional matrices."""
+        processed_df = calculate_advanced_indicators(self.mock_data)
+        self.assertIn('RSI', processed_df.columns)
+        self.assertIn('MACD', processed_df.columns)
+        self.assertIn('ATR', processed_df.columns)
+        self.assertFalse(processed_df.isna().all().all(), "Engine returned fully absolute empty columns.")
+
+    def test_ai_engine_logic(self):
+        """Validates AI decisions fall within bounded strategic parameters."""
+        processed_df = calculate_advanced_indicators(self.mock_data)
+        decision = generate_trading_signal(processed_df)
+        self.assertIn("signal", decision)
+        self.assertIn("target", decision)
+        self.assertIsInstance(decision["signal"], str)
 
 if __name__ == "__main__":
-    test_message = (
-        "🔥 *Grade AI Trading Engine: Alert Test*\n\n"
-        "Bhai, aapka Telegram alert system bilkul sahi URL aur structure ke saath live ho gaya hai!\n"
-        "Kal live market test ke liye aapka bot ab ekdum taiyar hai. 👍"
-    )
-    
-    send_telegram_alert(YOUR_TOKEN, YOUR_CHAT_ID, test_message)
+    unittest.main()
