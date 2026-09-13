@@ -1,6 +1,7 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
+import requests
 import plotly.graph_objects as go
 from indicators import calculate_advanced_indicators
 from ai_engine import generate_trading_signal
@@ -34,22 +35,33 @@ period = st.sidebar.selectbox("Lookback Window (Period):", ["1d", "5d", "1mo", "
 
 # Smart Guard against Intraday Data limitations
 if interval in ["1m", "5m", "15m"] and period in ["3mo", "1y"]:
-    st.sidebar.warning(f"⚠️ `{interval}` के लिए `{period}` इतिहास उपलब्ध नहीं है। इसे `5d` पर सेट किया जा रहा है।")
+    st.sidebar.warning(f"⚠️ `{interval}` के लिए `{period}` इतिहास उपलब्ध नहीं है। इसे `5d` पर सेट किया जा रहा. है।")
     period = "5d"
 
 if st.sidebar.button("⚡ Execute Deep Intelligence Scan", use_container_width=True):
     with st.spinner(f"Scanning {segment} matrices for {ticker}..."):
         try:
-            # Download market data safely
-            df = yf.download(tickers=ticker, period=period, interval=interval, progress=False)
+            # 🛡️ Anti-Blocking Session Engine Configuration
+            # यह ब्लॉक कोड याहू फाइनेंस की ब्लॉक पॉलिसी को बायपास करता है
+            custom_session = requests.Session()
+            custom_session.headers.update({
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Origin': 'https://yahoo.com',
+                'Referer': 'https://yahoo.com'
+            })
+            
+            # Download market data using custom masked session
+            df = yf.download(tickers=ticker, period=period, interval=interval, session=custom_session, progress=False)
             
             # Universal fallback for intraday connection stability
             if (df is None or df.empty) and interval in ["1m", "5m", "15m"]:
-                df = yf.download(tickers=ticker, period="5d", interval=interval, progress=False)
+                df = yf.download(tickers=ticker, period="5d", interval=interval, session=custom_session, progress=False)
                 
             if df is None or df.empty or len(df) < 2:
-                st.error("❌ Data Engine Error: इस सिंबल का लाइव डेटा नहीं मिल रहा है। कृपया सिंबल चेक करें।")
-                st.info("💡 टिप्स: भारतीय शेयरों के लिए पीछे `.NS` लगाएं (जैसे: SBIN.NS)। इंडेक्स के लिए `^NSEI` (Nifty) या `^NSEBANK` (BankNifty) लिखें। कमोडिटी फ्यूचर्स के लिए `CL=F` (Crude) या `GC=F` (Gold) का इस्तेमाल करें।")
+                st.error("❌ Data Engine Error: इस सिंबल का लाइव डेटा याहू सर्वर ने ब्लॉक कर दिया है या सिंबल गलत है।")
+                st.info("💡 टिप्स: यदि सिंबल सही है, तो 2-3 बार बटन दबाकर दोबारा ट्राई करें ताकि क्लाउड सर्वर नया IP एड्रेस ले सके।")
             else:
                 # Process data through pipelines safely
                 df = calculate_advanced_indicators(df)
@@ -92,4 +104,3 @@ if st.sidebar.button("⚡ Execute Deep Intelligence Scan", use_container_width=T
                 
         except Exception as e:
             st.error(f"Ecosystem Crash Error: {str(e)}")
-            st.warning("कृपया सुनिश्चित करें कि साइडबार में सिलेक्टेड Interval और Period एक दूसरे के अनुकूल हैं (जैसे छोटे टाइमफ्रेम 1m/5m के लिए 1d या 5d पीरियड का ही उपयोग करें)।")
