@@ -1,56 +1,89 @@
 import streamlit as st
 import yfinance as yf
+import pandas as pd
 import plotly.graph_objects as go
 from indicators import calculate_advanced_indicators
 from ai_engine import generate_trading_signal
 
-st.set_page_config(page_title="AI Trading Intelligence Suite", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="AI Multi-Segment Trading Terminal", layout="wide")
 
-st.title("🛡️ Institutional AI Trading System")
-st.caption("Advanced Real-time Analytics Engine featuring Multi-Indicator Convergence Model")
+st.title("🛡️ Institutional Multi-Segment AI System")
+st.caption("Real-time Trading Terminal supporting Intraday, Options, MCX Commodities & Delivery Segments")
 
-# Sidebar configurations
+# Sidebar Segment Selection
+st.sidebar.markdown("### 🌐 Market Segment")
+segment = st.sidebar.selectbox(
+    "Select Segment:", 
+    ["Intraday (Equity)", "Options (Index/Stock)", "MCX (Commodity)", "Delivery (Long Term)"]
+)
+
+# Segment-wise default ticker assistance
+if segment == "Intraday (Equity)":
+    default_ticker, default_interval, default_period = "RELIANCE.NS", "15m", "5d"
+elif segment == "Options (Index/Stock)":
+    default_ticker, default_interval, default_period = "^NSEI", "5m", "1d" # Nifty Index for Option analysis
+elif segment == "MCX (Commodity)":
+    default_ticker, default_interval, default_period = "GC=F", "15m", "5d" # Gold Futures (Global proxy for MCX)
+else:
+    default_ticker, default_interval, default_period = "TCS.NS", "1d", "1y"
+
 st.sidebar.markdown("### 🎛️ Terminal Controls")
-ticker = st.sidebar.text_input("Asset Ticker (e.g., RELIANCE.NS, TSLA, BTC-USD):", value="RELIANCE.NS").strip().upper()
-interval = st.sidebar.selectbox("Execution Frequency (Interval):", ["1m", "5m", "15m", "1h", "1d"], index=2)
-period = st.sidebar.selectbox("Lookback Window (Period):", ["1d", "5d", "1mo", "3mo", "1y"], index=2)
+ticker = st.sidebar.text_input("Asset Ticker Symbol:", value=default_ticker).strip().upper()
+interval = st.sidebar.selectbox("Execution Frequency (Interval):", ["1m", "5m", "15m", "1h", "1d"], index=["1m", "5m", "15m", "1h", "1d"].index(default_interval))
+period = st.sidebar.selectbox("Lookback Window (Period):", ["1d", "5d", "1mo", "3mo", "1y", "max"], index=["1d", "5d", "1mo", "3mo", "1y", "max"].index(default_period))
 
-if st.sidebar.button("⚡ Execute Live Analysis", use_container_width=True):
-    with st.spinner("Connecting to live exchanges & running AI matrices..."):
+# Smart Guard against Intraday Data limitations
+if interval in ["1m", "5m", "15m"] and period in ["3mo", "1y", "max"]:
+    st.sidebar.warning(f"⚠️ `{interval}` के लिए `{period}` इतिहास उपलब्ध नहीं है। इसे `5d` पर सेट किया जा रहा है।")
+    period = "5d"
+
+if st.sidebar.button("⚡ Execute Deep Intelligence Scan", use_container_width=True):
+    with st.spinner(f"Scanning {segment} matrices for {ticker}..."):
         try:
+            # Download market data safely
             df = yf.download(tickers=ticker, period=period, interval=interval, progress=False)
             
+            # Universal fallback for intraday connection stability
+            if df.empty and interval in ["1m", "5m", "15m"]:
+                df = yf.download(tickers=ticker, period="5d", interval=interval, progress=False)
+                
             if df.empty:
-                st.error("❌ Data Engine Error: Invalid symbol or no liquid volume found for selection.")
+                st.error("❌ Data Engine Error: इस सिंबल का लाइव डेटा नहीं मिल रहा है। कृपया सिंबल चेक करें।")
+                st.info("💡 टिप्स: भारतीय शेयरों के लिए पीछे `.NS` लगाएं (जैसे: SBIN.NS)। इंडेक्स के लिए `^NSEI` (Nifty) या `^NSEBANK` (BankNifty) लिखें। कमोडिटी फ्यूचर्स के लिए `CL=F` (Crude) या `GC=F` (Gold) का इस्तेमाल करें।")
             else:
-                # Engine Pipeling
+                # Process data through pipelines
                 df = calculate_advanced_indicators(df)
-                trade_setup = generate_trading_signal(df)
+                trade_setup = generate_trading_signal(df, ticker, segment)
                 
+                if isinstance(df.columns, pd.MultiIndex):
+                    df.columns = df.columns.droplevel(1)
+                    
                 latest_row = df.iloc[-1]
+                close_val = float(latest_row['Close'])
                 
-                # Metric Grid
+                # Currency Sign Identification
+                currency_symbol = "$" if any(x in ticker for x in ["=", "^"]) and ".NS" not in ticker else "₹"
+                
+                # Metric Grid Setup
                 m1, m2, m3, m4 = st.columns(4)
-                m1.metric("Live LTP", f"₹{latest_row['Close']:.2f}")
+                m1.metric(f"LTP ({ticker})", f"{currency_symbol}{close_val:.2f}")
+                m2.metric("Verdict Signal", trade_setup['signal'])
+                m3.metric("🎯 Target Level", f"{currency_symbol}{trade_setup['target']:.2f}" if trade_setup['target'] > 0 else "N/A")
+                m4.metric("🛑 Stoploss Level", f"{currency_symbol}{trade_setup['sl']:.2f}" if trade_setup['sl'] > 0 else "N/A")
                 
-                sig = trade_setup['signal']
-                sig_color = "🟢" if "BUY" in sig else "🔴" if "SELL" in sig else "⚪"
-                m2.metric("System Verdict", f"{sig_color} {sig}")
+                if "HOLD" not in trade_setup['signal']:
+                    st.success(f"📱 WhatsApp Alert Triggered for {segment} Setup!")
+                    
+                st.info(f"**AI Strategy Engine Log:** {trade_setup['reason']}")
                 
-                m3.metric("🎯 Calculated Target", f"₹{trade_setup['target']:.2f}" if trade_setup['target'] > 0 else "N/A")
-                m4.metric("🛑 System Stoploss", f"₹{trade_setup['sl']:.2f}" if trade_setup['sl'] > 0 else "N/A")
-                
-                # Logic justification box
-                st.info(f"**Engine Framework Logs:** {trade_setup['reason']}")
-                
-                # High-fidelity Interactive Charts
+                # Render High-Fidelity Candlestick Chart
                 fig = go.Figure()
                 fig.add_trace(go.Candlestick(x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'], name='Price Action'))
-                fig.add_trace(go.Scatter(x=df.index, y=df['BB_Upper'], line=dict(color='rgba(173,216,230,0.5)', width=1), name='BB Upper'))
-                fig.add_trace(go.Scatter(x=df.index, y=df['BB_Lower'], line=dict(color='rgba(173,216,230,0.5)', width=1), name='BB Lower'))
+                fig.add_trace(go.Scatter(x=df.index, y=df['BB_Upper'], line=dict(color='rgba(255,255,255,0.3)', width=1), name='BB Upper'))
+                fig.add_trace(go.Scatter(x=df.index, y=df['BB_Lower'], line=dict(color='rgba(255,255,255,0.3)', width=1), name='BB Lower'))
                 
-                fig.update_layout(template="plotly_dark", height=550, xaxis_rangeslider_visible=False, margin=dict(l=20, r=20, t=30, b=20))
+                fig.update_layout(template="plotly_dark", height=500, xaxis_rangeslider_visible=False, margin=dict(l=10, r=10, t=10, b=10))
                 st.plotly_chart(fig, use_container_width=True)
                 
         except Exception as e:
-            st.error(f"Critical Runtime Exception: {str(e)}")
+            st.error(f"Ecosystem Crash Error: {str(e)}")
