@@ -1,34 +1,38 @@
 import pandas as pd
+import numpy as np
+from ta.momentum import RSIIndicator
+from ta.trend import MACD
 
-def calculate_world_class_signals(df):
-    """
-    Pure mathematical calculations for RSI, EMA, and MACD.
-    Zero external indicator library dependencies to prevent server crashes.
-    """
-    if df is None or df.empty or len(df) < 50:
+def calculate_advanced_indicators(df: pd.DataFrame) -> pd.DataFrame:
+    """Calculates world-class technical indicators cleanly handling pandas multi-indices."""
+    if df.empty:
         return df
+        
+    df = df.copy()
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.droplevel(1)
+        
+    # 1. RSI (Relative Strength Index)
+    df['RSI'] = RSIIndicator(close=df['Close'], window=14).rsi()
     
-    # 1. EMA Calculations safely
-    df['EMA_50'] = df['close'].ewm(span=min(50, len(df)), adjust=False).mean()
-    df['EMA_200'] = df['close'].ewm(span=min(200, len(df)), adjust=False).mean()
+    # 2. MACD (Moving Average Convergence Divergence)
+    macd_obj = MACD(close=df['Close'])
+    df['MACD'] = macd_obj.macd()
+    df['MACD_Signal'] = macd_obj.macd_signal()
     
-    # 2. RSI Calculation (Relative Strength Index)
-    delta = df['close'].diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=min(14, len(df)), min_periods=1).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=min(14, len(df)), min_periods=1).mean()
-    rs = gain / (loss + 1e-10)
-    df['RSI'] = 100 - (100 / (1 + rs))
+    # 3. Bollinger Bands (Volatility & Target Anchors)
+    df['MA20'] = df['Close'].rolling(window=20).mean()
+    df['StdDev'] = df['Close'].rolling(window=20).std()
+    df['BB_Upper'] = df['MA20'] + (df['StdDev'] * 2)
+    df['BB_Lower'] = df['MA20'] - (df['StdDev'] * 2)
     
-    # 3. Volume Average Benchmark
-    df['Vol_Avg'] = df['volume'].rolling(window=min(5, len(df)), min_periods=1).mean()
+    # 4. ATR (Average True Range for Dynamic Stoploss)
+    high_low = df['High'] - df['Low']
+    high_cp = np.abs(df['High'] - df['Close'].shift())
+    low_cp = np.abs(df['Low'] - df['Close'].shift())
+    df['TR'] = pd.concat([high_low, high_cp, low_cp], axis=1).max(axis=1)
+    df['ATR'] = df['TR'].rolling(window=14).mean()
     
-    # 4. Final Delivery Buy Signal Generation Strategy
-    df['Signal'] = 'HOLD'
-    
-    # Filtering Condition Check Blocks
-    strong_trend = df['EMA_50'] > df['EMA_200']
-    oversold_reversal = (df['RSI'] > 35) & (df['RSI'].shift(1) <= 35)
-    volume_breakout = df['volume'] > (df['Vol_Avg'] * 1.8)
-    
-    df.loc[strong_trend & oversold_reversal & volume_breakout, 'Signal'] = 'BUY'
+    # Drop temp columns to keep it clean
+    df.drop(columns=['StdDev', 'TR'], errors='ignore', inplace=True)
     return df
